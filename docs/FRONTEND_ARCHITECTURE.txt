@@ -1,0 +1,7781 @@
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 1 — Project Foundation
+
+---
+
+# Project Name
+
+Secure Credential Organizer UI
+
+---
+
+# Purpose
+
+Build a modern, premium, responsive frontend for the existing Spring Boot backend.
+
+The application allows users to securely store and manage website credentials with AES encrypted passwords.
+
+The UI should feel like a modern SaaS application rather than a college project.
+
+Design Inspiration:
+
+• Apple
+• Proton Pass
+• Bitwarden
+• 1Password
+• Linear
+• Vercel
+
+Avoid generic admin dashboards.
+
+The goal is to make recruiters think:
+
+"This looks like a real product."
+
+---
+
+# Tech Stack
+
+Framework
+
+React 19
+
+Bundler
+
+Vite
+
+Language
+
+TypeScript
+
+Routing
+
+React Router DOM
+
+Styling
+
+Tailwind CSS
+
+Component Library
+
+shadcn/ui
+
+Icons
+
+Lucide React
+
+HTTP Client
+
+Axios
+
+Server State
+
+TanStack Query
+
+Forms
+
+React Hook Form
+
+Validation
+
+Zod
+
+Notifications
+
+Sonner
+
+Charts
+
+Recharts
+
+Utilities
+
+clsx
+tailwind-merge
+
+Authentication
+
+JWT
+
+Package Manager
+
+npm
+
+---
+
+# Project Principles
+
+The UI should follow these principles.
+
+1.
+
+Minimal
+
+No unnecessary decorations.
+
+2.
+
+Clean
+
+Lots of spacing.
+
+Readable typography.
+
+3.
+
+Fast
+
+Avoid unnecessary renders.
+
+Lazy load pages.
+
+4.
+
+Reusable
+
+Everything reusable.
+
+No duplicate components.
+
+5.
+
+Scalable
+
+Adding future modules should require minimal changes.
+
+6.
+
+Professional
+
+No colorful gradients everywhere.
+
+No oversized icons.
+
+No childish design.
+
+---
+
+# Theme
+
+Primary
+
+#2563EB
+
+Primary Hover
+
+#1D4ED8
+
+Background
+
+#FFFFFF
+
+Surface
+
+#FAFAFA
+
+Card
+
+#FFFFFF
+
+Border
+
+#E5E7EB
+
+Heading
+
+#111827
+
+Body Text
+
+#4B5563
+
+Muted Text
+
+#9CA3AF
+
+Success
+
+#16A34A
+
+Warning
+
+#F59E0B
+
+Danger
+
+#DC2626
+
+Info
+
+#0284C7
+
+Shadow
+
+Very Soft
+
+Border Radius
+
+12px
+
+Animation Duration
+
+200ms
+
+---
+
+# Typography
+
+Primary Font
+
+Inter
+
+Heading Font
+
+DM Serif Display
+
+Heading Sizes
+
+Hero
+
+48px
+
+H1
+
+36px
+
+H2
+
+30px
+
+H3
+
+24px
+
+Body
+
+16px
+
+Small
+
+14px
+
+Caption
+
+12px
+
+Font Weight
+
+Regular
+
+400
+
+Medium
+
+500
+
+SemiBold
+
+600
+
+Bold
+
+700
+
+---
+
+# Spacing System
+
+Use only these spacing values.
+
+4
+
+8
+
+12
+
+16
+
+20
+
+24
+
+32
+
+40
+
+48
+
+64
+
+96
+
+Never use random spacing.
+
+---
+
+# Shadows
+
+Cards
+
+shadow-sm
+
+Dropdowns
+
+shadow-md
+
+Dialogs
+
+shadow-lg
+
+Never use huge shadows.
+
+---
+
+# Border Radius
+
+Buttons
+
+10px
+
+Inputs
+
+10px
+
+Cards
+
+12px
+
+Dialogs
+
+16px
+
+Avatars
+
+Full
+
+---
+
+# Responsive Breakpoints
+
+Mobile
+
+<640
+
+Tablet
+
+640-1023
+
+Laptop
+
+1024-1279
+
+Desktop
+
+1280+
+
+Large Desktop
+
+1536+
+
+Everything must be responsive.
+
+---
+
+# Folder Structure
+
+secure-credential-organizer-ui
+
+├── public
+│
+├── src
+│
+│── assets
+│   ├── images
+│   │   ├── auth
+│   │   ├── dashboard
+│   │   ├── landing
+│   │   ├── profile
+│   │   └── illustrations
+│   │
+│   ├── icons
+│   │
+│   ├── logo
+│   │
+│   └── fonts
+│
+│── components
+│   ├── common
+│   ├── ui
+│   ├── auth
+│   ├── dashboard
+│   ├── credential
+│   ├── category
+│   ├── profile
+│   ├── password
+│   ├── landing
+│   └── layout
+│
+│── layouts
+│
+│── pages
+│   ├── landing
+│   ├── auth
+│   ├── dashboard
+│   ├── credential
+│   ├── category
+│   ├── profile
+│   └── password
+│
+│── services
+│
+│── hooks
+│
+│── context
+│
+│── routes
+│
+│── constants
+│
+│── utils
+│
+│── lib
+│
+│── types
+│
+│── styles
+│
+│── App.tsx
+│
+│── main.tsx
+│
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── tailwind.config.ts
+├── components.json
+└── README.md
+
+---
+
+# Folder Responsibilities
+
+assets
+
+Stores all static resources.
+
+Never put business logic here.
+
+---
+
+components
+
+Contains reusable UI components.
+
+Should never contain page-level logic.
+
+---
+
+pages
+
+Contains complete screens.
+
+Each page assembles multiple components.
+
+---
+
+layouts
+
+Contains application layouts.
+
+Public Layout
+
+Authentication Layout
+
+Dashboard Layout
+
+---
+
+services
+
+Responsible only for API communication.
+
+Never store UI state.
+
+---
+
+hooks
+
+Contains reusable custom hooks.
+
+Business logic belongs here.
+
+---
+
+context
+
+Contains global contexts.
+
+Example:
+
+Theme
+
+Authentication
+
+---
+
+constants
+
+Application constants.
+
+Routes
+
+API URLs
+
+Local Storage Keys
+
+Regex
+
+App Config
+
+---
+
+utils
+
+Pure helper functions.
+
+No React code.
+
+---
+
+types
+
+All interfaces and TypeScript types.
+
+---
+
+lib
+
+Third-party configuration.
+
+Axios
+
+React Query
+
+Utilities
+
+---
+
+styles
+
+Global CSS.
+
+Tailwind overrides.
+
+Variables.
+
+---
+
+Architecture Rule
+
+Pages → Components → Hooks → Services → Backend
+
+Only this direction is allowed.
+
+Never call services directly from deeply nested UI components.
+
+---
+
+END OF PART 1
+
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 2 — Component Architecture
+
+---
+
+# Component Design Principles
+
+Every component must satisfy these rules.
+
+1.
+
+Single Responsibility Principle
+
+One component = One job.
+
+Example
+
+CredentialCard
+
+Only display a credential.
+
+Do NOT call APIs.
+
+Do NOT manage authentication.
+
+---
+
+2.
+
+Reusable
+
+If a component can be reused twice,
+
+move it into common/.
+
+---
+
+3.
+
+Presentational Components
+
+Components should mainly render UI.
+
+Business logic belongs inside hooks.
+
+---
+
+4.
+
+No API Calls
+
+❌ Never
+
+axios.get()
+
+axios.post()
+
+inside components.
+
+Always use
+
+Custom Hook
+
+↓
+
+Service
+
+↓
+
+Backend
+
+---
+
+5.
+
+Maximum Component Size
+
+Target
+
+<150 lines
+
+Hard Limit
+
+250 lines
+
+Split if necessary.
+
+---
+
+# Component Folder Structure
+
+components/
+
+├── common/
+├── ui/
+├── layout/
+├── auth/
+├── landing/
+├── dashboard/
+├── credential/
+├── category/
+├── password/
+└── profile/
+
+---
+
+# COMMON COMPONENTS
+
+Reusable across the entire application.
+
+---
+
+AppLogo.tsx
+
+Purpose
+
+Display application logo.
+
+Props
+
+size
+
+showText
+
+variant
+
+Used In
+
+Navbar
+
+Sidebar
+
+Login
+
+Landing Page
+
+Footer
+
+---
+
+PageContainer.tsx
+
+Purpose
+
+Provides page padding and max width.
+
+Used In
+
+Every page.
+
+---
+
+SectionTitle.tsx
+
+Purpose
+
+Page heading with subtitle.
+
+Props
+
+title
+
+description
+
+actionButton
+
+---
+
+EmptyState.tsx
+
+Purpose
+
+Show empty data illustration.
+
+Props
+
+title
+
+description
+
+buttonText
+
+buttonAction
+
+image
+
+---
+
+LoadingSpinner.tsx
+
+Purpose
+
+Loading indicator.
+
+Variants
+
+Small
+
+Medium
+
+Large
+
+Fullscreen
+
+---
+
+LoadingSkeleton.tsx
+
+Purpose
+
+Skeleton loaders.
+
+Should support
+
+Cards
+
+Tables
+
+Dashboard
+
+Forms
+
+---
+
+SearchBar.tsx
+
+Purpose
+
+Global search input.
+
+No filtering logic.
+
+Only emits
+
+onSearch()
+
+---
+
+ConfirmationDialog.tsx
+
+Purpose
+
+Reusable confirmation dialog.
+
+Examples
+
+Delete
+
+Logout
+
+Archive
+
+---
+
+DeleteDialog.tsx
+
+Purpose
+
+Specialized delete confirmation.
+
+Shows
+
+Warning icon
+
+Message
+
+Cancel
+
+Delete
+
+---
+
+CopyButton.tsx
+
+Purpose
+
+Copy text.
+
+Shows toast.
+
+Reusable everywhere.
+
+---
+
+RevealButton.tsx
+
+Purpose
+
+Toggle password visibility.
+
+Reusable.
+
+---
+
+StatusBadge.tsx
+
+Purpose
+
+Colored status chip.
+
+Examples
+
+Strong
+
+Weak
+
+Favorite
+
+Active
+
+---
+
+Avatar.tsx
+
+Purpose
+
+Display user avatar.
+
+Fallback to initials.
+
+---
+
+# UI COMPONENTS
+
+Built on shadcn/ui.
+
+Do not modify library files directly.
+
+Wrap them if customization is needed.
+
+Examples
+
+Button
+
+Input
+
+Textarea
+
+Dialog
+
+Dropdown
+
+Popover
+
+Sheet
+
+Tabs
+
+Tooltip
+
+Card
+
+ScrollArea
+
+Separator
+
+Badge
+
+Switch
+
+Checkbox
+
+RadioGroup
+
+Alert
+
+Accordion
+
+Pagination
+
+---
+
+# LAYOUT COMPONENTS
+
+Navbar.tsx
+
+Purpose
+
+Top navigation.
+
+Contains
+
+Logo
+
+Search
+
+Profile
+
+Notifications
+
+---
+
+Sidebar.tsx
+
+Purpose
+
+Dashboard navigation.
+
+Contains
+
+Dashboard
+
+Credentials
+
+Categories
+
+Generator
+
+Strength Checker
+
+Profile
+
+Logout
+
+Should support
+
+Collapse
+
+Mobile drawer
+
+---
+
+DashboardHeader.tsx
+
+Purpose
+
+Page heading.
+
+Contains
+
+Breadcrumb
+
+Action Button
+
+---
+
+Footer.tsx
+
+Landing page footer.
+
+---
+
+Breadcrumb.tsx
+
+Reusable breadcrumb.
+
+---
+
+MobileMenu.tsx
+
+Mobile navigation.
+
+---
+
+# LANDING COMPONENTS
+
+HeroSection.tsx
+
+FeaturesSection.tsx
+
+HowItWorksSection.tsx
+
+BenefitsSection.tsx
+
+TestimonialsSection.tsx
+
+FAQSection.tsx
+
+CTASection.tsx
+
+FooterSection.tsx
+
+These components are only for marketing pages.
+
+No authentication logic.
+
+---
+
+# AUTH COMPONENTS
+
+LoginForm.tsx
+
+Responsibilities
+
+Email
+
+Password
+
+Validation
+
+Submit
+
+Forgot Password Link
+
+No API.
+
+Uses
+
+useLogin()
+
+---
+
+RegisterForm.tsx
+
+Responsibilities
+
+Name
+
+Email
+
+Password
+
+Confirm Password
+
+Validation
+
+Terms Checkbox
+
+---
+
+ForgotPasswordForm.tsx
+
+Email input.
+
+OTP request.
+
+---
+
+OTPVerificationForm.tsx
+
+OTP fields.
+
+Timer.
+
+Resend.
+
+---
+
+ResetPasswordForm.tsx
+
+New Password
+
+Confirm Password
+
+Strength Meter
+
+---
+
+PasswordRequirements.tsx
+
+Display password rules.
+
+No validation logic.
+
+---
+
+# DASHBOARD COMPONENTS
+
+StatCard.tsx
+
+Shows
+
+Icon
+
+Title
+
+Count
+
+Trend
+
+---
+
+SecurityScoreCard.tsx
+
+Shows
+
+Security Score
+
+Circular Progress
+
+Suggestions
+
+---
+
+RecentCredentials.tsx
+
+Latest credentials.
+
+---
+
+QuickActions.tsx
+
+Buttons
+
+Add Credential
+
+Generate Password
+
+Analyze Password
+
+---
+
+ActivityTimeline.tsx
+
+Recent activity.
+
+---
+
+DashboardChart.tsx
+
+Statistics.
+
+Recharts.
+
+---
+
+# CREDENTIAL COMPONENTS
+
+CredentialCard.tsx
+
+Purpose
+
+Display one credential.
+
+Shows
+
+Website Logo
+
+Website Name
+
+Username
+
+Masked Password
+
+Category
+
+Favorite
+
+Updated Date
+
+Buttons
+
+Copy
+
+Reveal
+
+Edit
+
+Delete
+
+Must NOT
+
+Call APIs
+
+Open dialogs directly
+
+Manage state
+
+---
+
+CredentialGrid.tsx
+
+Grid layout.
+
+---
+
+CredentialTable.tsx
+
+Desktop table.
+
+---
+
+CredentialForm.tsx
+
+Create/Edit form.
+
+Only UI.
+
+Validation via React Hook Form.
+
+---
+
+CredentialDialog.tsx
+
+Wrapper dialog.
+
+Contains
+
+CredentialForm
+
+---
+
+CredentialFilter.tsx
+
+Category
+
+Favorites
+
+Search
+
+Sort
+
+No API.
+
+---
+
+CredentialSearch.tsx
+
+Only emits search text.
+
+---
+
+# CATEGORY COMPONENTS
+
+CategoryCard.tsx
+
+Displays category.
+
+---
+
+CategoryForm.tsx
+
+Create/Edit category.
+
+---
+
+CategoryList.tsx
+
+Category collection.
+
+---
+
+# PROFILE COMPONENTS
+
+ProfileCard.tsx
+
+User details.
+
+---
+
+ProfileForm.tsx
+
+Edit profile.
+
+---
+
+ChangePasswordForm.tsx
+
+Password change.
+
+---
+
+AccountStatistics.tsx
+
+Display
+
+Credentials
+
+Categories
+
+Security Score
+
+---
+
+# PASSWORD COMPONENTS
+
+PasswordGeneratorCard.tsx
+
+Generate password.
+
+Options
+
+Length
+
+Uppercase
+
+Lowercase
+
+Numbers
+
+Symbols
+
+---
+
+PasswordStrengthMeter.tsx
+
+Strength bar.
+
+Suggestions.
+
+---
+
+PasswordHistory.tsx
+
+Optional future feature.
+
+---
+
+# COMPONENT COMMUNICATION
+
+Allowed
+
+Page
+
+↓
+
+Component
+
+↓
+
+Hook
+
+↓
+
+Service
+
+↓
+
+Backend
+
+Forbidden
+
+Component
+
+↓
+
+Service
+
+Component
+
+↓
+
+Component
+
+↓
+
+Service
+
+---
+
+# Naming Convention
+
+Component
+
+PascalCase
+
+CredentialCard.tsx
+
+Hook
+
+camelCase
+
+useCredentials.ts
+
+Types
+
+PascalCase
+
+Credential.ts
+
+Constants
+
+UPPER_CASE
+
+API_BASE_URL
+
+---
+
+END OF PART 2
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 3 — Pages, Routing & Layout Architecture
+
+---
+
+# Routing Philosophy
+
+The application must follow Feature-Based Routing.
+
+Every major feature has its own page folder.
+
+Never place all pages inside a single folder.
+
+Example
+
+pages/
+
+landing/
+
+auth/
+
+dashboard/
+
+credential/
+
+category/
+
+profile/
+
+password/
+
+---
+
+# Final Route Structure
+
+/
+
+Landing Page
+
+------------------------------------------------
+
+/login
+
+Login Page
+
+------------------------------------------------
+
+/register
+
+Register Page
+
+------------------------------------------------
+
+/forgot-password
+
+Forgot Password
+
+------------------------------------------------
+
+/verify-otp
+
+OTP Verification
+
+------------------------------------------------
+
+/reset-password
+
+Reset Password
+
+------------------------------------------------
+
+/dashboard
+
+Dashboard Home
+
+Protected
+
+------------------------------------------------
+
+/credentials
+
+All Credentials
+
+Protected
+
+------------------------------------------------
+
+/credentials/new
+
+Create Credential
+
+Protected
+
+------------------------------------------------
+
+/credentials/:id
+
+Credential Details
+
+Protected
+
+------------------------------------------------
+
+/credentials/:id/edit
+
+Edit Credential
+
+Protected
+
+------------------------------------------------
+
+/categories
+
+Category List
+
+Protected
+
+------------------------------------------------
+
+/categories/new
+
+Create Category
+
+Protected
+
+------------------------------------------------
+
+/categories/:id/edit
+
+Edit Category
+
+Protected
+
+------------------------------------------------
+
+/password-generator
+
+Password Generator
+
+Protected
+
+------------------------------------------------
+
+/password-strength
+
+Password Strength Analyzer
+
+Protected
+
+------------------------------------------------
+
+/profile
+
+User Profile
+
+Protected
+
+------------------------------------------------
+
+/settings
+
+Application Settings
+
+Protected
+
+------------------------------------------------
+
+/404
+
+Not Found
+
+------------------------------------------------
+
+*
+
+Redirect
+
+404
+
+---
+
+# Route Folder Structure
+
+pages/
+
+landing/
+
+LandingPage.tsx
+
+------------------------------------------------
+
+auth/
+
+LoginPage.tsx
+
+RegisterPage.tsx
+
+ForgotPasswordPage.tsx
+
+VerifyOtpPage.tsx
+
+ResetPasswordPage.tsx
+
+------------------------------------------------
+
+dashboard/
+
+DashboardPage.tsx
+
+------------------------------------------------
+
+credential/
+
+CredentialListPage.tsx
+
+CredentialCreatePage.tsx
+
+CredentialDetailsPage.tsx
+
+CredentialEditPage.tsx
+
+------------------------------------------------
+
+category/
+
+CategoryPage.tsx
+
+CategoryCreatePage.tsx
+
+CategoryEditPage.tsx
+
+------------------------------------------------
+
+password/
+
+PasswordGeneratorPage.tsx
+
+PasswordStrengthPage.tsx
+
+------------------------------------------------
+
+profile/
+
+ProfilePage.tsx
+
+SettingsPage.tsx
+
+------------------------------------------------
+
+NotFoundPage.tsx
+
+---
+
+# Layout Architecture
+
+Application contains only three layouts.
+
+PublicLayout
+
+AuthLayout
+
+DashboardLayout
+
+Nothing else.
+
+---
+
+# PublicLayout
+
+Used By
+
+Landing
+
+Contains
+
+Navbar
+
+Hero
+
+Footer
+
+No Sidebar
+
+No Authentication
+
+Navigation
+
+Home
+
+Features
+
+About
+
+Login
+
+Register
+
+---
+
+# AuthLayout
+
+Used By
+
+Login
+
+Register
+
+Forgot Password
+
+OTP
+
+Reset Password
+
+Contains
+
+Centered Card
+
+Brand Logo
+
+Minimal Background
+
+No Sidebar
+
+No Navbar
+
+No Footer
+
+---
+
+# DashboardLayout
+
+Used By
+
+Every Protected Page
+
+Contains
+
+Sidebar
+
+Navbar
+
+Breadcrumb
+
+Page Container
+
+Mobile Drawer
+
+Responsive Layout
+
+Footer (optional)
+
+---
+
+# Layout Structure
+
+DashboardLayout
+
+--------------------------------
+
+Navbar
+
+--------------------------------
+
+Sidebar
+
+--------------------------------
+
+Content
+
+--------------------------------
+
+Footer
+
+---
+
+# Route Protection
+
+Public Routes
+
+Landing
+
+Login
+
+Register
+
+Forgot Password
+
+OTP
+
+Reset Password
+
+------------------------------------------------
+
+Protected Routes
+
+Dashboard
+
+Credentials
+
+Categories
+
+Profile
+
+Generator
+
+Strength
+
+Settings
+
+------------------------------------------------
+
+Only authenticated users may access protected routes.
+
+---
+
+# ProtectedRoute Component
+
+Responsibilities
+
+Check JWT
+
+Check Login
+
+Redirect to Login
+
+Remember previous URL
+
+Show Loader while checking authentication
+
+Never render protected page before auth check completes.
+
+---
+
+# PublicRoute Component
+
+Responsibilities
+
+If user is already logged in
+
+Redirect
+
+Dashboard
+
+Prevent authenticated users from opening Login/Register.
+
+---
+
+# Route Guards
+
+Unauthenticated User
+
+↓
+
+Protected Page
+
+↓
+
+Redirect Login
+
+--------------------------------
+
+Authenticated User
+
+↓
+
+Login Page
+
+↓
+
+Redirect Dashboard
+
+--------------------------------
+
+Expired JWT
+
+↓
+
+Logout
+
+↓
+
+Redirect Login
+
+---
+
+# Navigation Structure
+
+Sidebar
+
+Dashboard
+
+Credentials
+
+Categories
+
+Password Generator
+
+Password Strength
+
+Profile
+
+Settings
+
+Logout
+
+---
+
+# Navbar
+
+Contains
+
+Breadcrumb
+
+Search
+
+Notification Icon
+
+Theme Toggle (Future)
+
+Profile Avatar
+
+Dropdown Menu
+
+---
+
+# Profile Dropdown
+
+My Profile
+
+Settings
+
+Logout
+
+---
+
+# Breadcrumb Rules
+
+Dashboard
+
+Dashboard
+
+--------------------------------
+
+Credential List
+
+Dashboard
+
+>
+
+Credentials
+
+--------------------------------
+
+Credential Details
+
+Dashboard
+
+>
+
+Credentials
+
+>
+
+Website Name
+
+--------------------------------
+
+Profile
+
+Dashboard
+
+>
+
+Profile
+
+---
+
+# Lazy Loading
+
+Every page must be lazy loaded.
+
+Example
+
+const DashboardPage = lazy(() => import(...))
+
+Use Suspense.
+
+Show LoadingSkeleton while loading.
+
+Never eagerly load all pages.
+
+---
+
+# Scroll Behaviour
+
+On every route change
+
+Scroll to Top.
+
+Implement reusable ScrollToTop component.
+
+---
+
+# Error Pages
+
+404
+
+Simple illustration
+
+Go Home
+
+Go Dashboard
+
+--------------------------------
+
+500 (Future)
+
+Server Error
+
+Retry Button
+
+---
+
+# Authentication Navigation Flow
+
+Landing
+
+↓
+
+Login
+
+↓
+
+Dashboard
+
+↓
+
+Credentials
+
+↓
+
+Credential Details
+
+↓
+
+Edit Credential
+
+↓
+
+Back
+
+Credentials
+
+---
+
+Forgot Password Flow
+
+Login
+
+↓
+
+Forgot Password
+
+↓
+
+Enter Email
+
+↓
+
+OTP
+
+↓
+
+New Password
+
+↓
+
+Success
+
+↓
+
+Login
+
+---
+
+# Mobile Navigation
+
+Desktop
+
+Sidebar Visible
+
+--------------------------------
+
+Tablet
+
+Collapsible Sidebar
+
+--------------------------------
+
+Mobile
+
+Hamburger Menu
+
+Slide Drawer
+
+Overlay Background
+
+---
+
+# Route File Structure
+
+routes/
+
+AppRoutes.tsx
+
+ProtectedRoute.tsx
+
+PublicRoute.tsx
+
+RouteConstants.ts
+
+ScrollToTop.tsx
+
+---
+
+# Route Constants
+
+Never hardcode paths.
+
+Always use constants.
+
+Example
+
+ROUTES.LOGIN
+
+ROUTES.DASHBOARD
+
+ROUTES.CREDENTIALS
+
+ROUTES.PROFILE
+
+---
+
+# Deep Linking
+
+Application should support direct URLs.
+
+Example
+
+/credentials/24
+
+Should directly open credential details if authenticated.
+
+---
+
+# Future Routes
+
+Do not implement now.
+
+Reserve architecture.
+
+Audit Logs
+
+Security Report
+
+Shared Vault
+
+Trash
+
+Import
+
+Export
+
+Browser Extension
+
+Dark Theme Settings
+
+2FA
+
+API Tokens
+
+---
+
+END OF PART 3
+
+
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 4 — Services, Axios & React Query Architecture
+
+---
+
+# Goal
+
+The frontend must never communicate with backend directly.
+
+UI
+
+↓
+
+Hook
+
+↓
+
+Service
+
+↓
+
+Axios
+
+↓
+
+Spring Boot API
+
+Only this flow is allowed.
+
+---
+
+# Architecture Flow
+
+React Component
+
+↓
+
+Custom Hook
+
+↓
+
+Service
+
+↓
+
+Axios Instance
+
+↓
+
+Spring Boot Backend
+
+↓
+
+MySQL
+
+Never skip any layer.
+
+---
+
+# Folder Structure
+
+src/
+
+services/
+
+auth/
+
+credential/
+
+category/
+
+dashboard/
+
+profile/
+
+password/
+
+hooks/
+
+lib/
+
+constants/
+
+types/
+
+---
+
+# Services Folder
+
+services/
+
+authService.ts
+
+credentialService.ts
+
+categoryService.ts
+
+dashboardService.ts
+
+profileService.ts
+
+passwordService.ts
+
+---
+
+Each service represents ONE backend module.
+
+Never mix APIs.
+
+Wrong
+
+authService
+
+contains login
+
+createCredential
+
+deleteCategory
+
+Correct
+
+authService
+
+↓
+
+Only authentication APIs
+
+---
+
+# authService.ts
+
+Responsibilities
+
+Login
+
+Register
+
+Forgot Password
+
+Verify OTP
+
+Reset Password
+
+Refresh Token (Future)
+
+Logout
+
+Profile (optional)
+
+Never
+
+Store JWT
+
+Navigate
+
+Show Toast
+
+Open Dialog
+
+Only return API response.
+
+---
+
+Functions
+
+login()
+
+register()
+
+forgotPassword()
+
+verifyOtp()
+
+resetPassword()
+
+logout()
+
+---
+
+# credentialService.ts
+
+Responsibilities
+
+Create Credential
+
+Update Credential
+
+Delete Credential
+
+Get Credential
+
+Get All Credentials
+
+Favorite Credential
+
+Search Credential
+
+Functions
+
+getAll()
+
+getById()
+
+create()
+
+update()
+
+delete()
+
+favorite()
+
+search()
+
+---
+
+# categoryService.ts
+
+Responsibilities
+
+Category CRUD
+
+Functions
+
+getCategories()
+
+createCategory()
+
+updateCategory()
+
+deleteCategory()
+
+---
+
+# dashboardService.ts
+
+Responsibilities
+
+Dashboard statistics
+
+Security score
+
+Recent credentials
+
+Activity
+
+Functions
+
+getDashboard()
+
+getStatistics()
+
+getRecentCredentials()
+
+getSecurityScore()
+
+---
+
+# passwordService.ts
+
+Responsibilities
+
+Password generation
+
+Password analysis
+
+Strength checking
+
+Future
+
+Password history
+
+Functions
+
+generatePassword()
+
+analyzePassword()
+
+checkStrength()
+
+---
+
+# profileService.ts
+
+Responsibilities
+
+Get profile
+
+Update profile
+
+Change password
+
+Delete account (future)
+
+Functions
+
+getProfile()
+
+updateProfile()
+
+changePassword()
+
+---
+
+# Axios Architecture
+
+Never use axios directly.
+
+Wrong
+
+axios.get()
+
+inside components.
+
+Correct
+
+Axios Instance
+
+↓
+
+Service
+
+↓
+
+Hook
+
+↓
+
+Component
+
+---
+
+# Folder
+
+lib/
+
+axios.ts
+
+---
+
+Responsibilities
+
+Create axios instance
+
+Set Base URL
+
+Attach JWT
+
+Attach JSON headers
+
+Handle timeout
+
+Handle interceptors
+
+Nothing else.
+
+---
+
+# Base Configuration
+
+Base URL
+
+Environment Variable
+
+Timeout
+
+10 seconds
+
+Headers
+
+Content-Type
+
+application/json
+
+Accept
+
+application/json
+
+---
+
+# Authentication Header
+
+Every protected request
+
+Authorization
+
+Bearer JWT_TOKEN
+
+Automatically attached by interceptor.
+
+Never manually attach token.
+
+---
+
+# Request Interceptor
+
+Responsibilities
+
+Attach JWT
+
+Attach default headers
+
+Attach request id (future)
+
+Log request in development
+
+---
+
+# Response Interceptor
+
+Responsibilities
+
+Handle
+
+401
+
+↓
+
+Logout
+
+↓
+
+Redirect Login
+
+--------------------------------
+
+403
+
+↓
+
+Permission Error
+
+--------------------------------
+
+404
+
+↓
+
+Not Found
+
+--------------------------------
+
+500
+
+↓
+
+Server Error
+
+--------------------------------
+
+Network Error
+
+↓
+
+Friendly Toast
+
+---
+
+# Environment Variables
+
+.env
+
+VITE_API_BASE_URL
+
+Never hardcode localhost.
+
+Wrong
+
+http://localhost:8080
+
+Correct
+
+import.meta.env.VITE_API_BASE_URL
+
+---
+
+# React Query Folder
+
+lib/
+
+queryClient.ts
+
+---
+
+Responsibilities
+
+Global Query Client
+
+Caching
+
+Retries
+
+Invalidation
+
+Prefetch
+
+---
+
+# React Query Rules
+
+Use Query
+
+↓
+
+GET APIs
+
+Use Mutation
+
+↓
+
+POST
+
+PUT
+
+PATCH
+
+DELETE
+
+Never use Mutation for fetching.
+
+---
+
+# Query Keys
+
+Centralize keys.
+
+Example
+
+dashboard
+
+credentials
+
+credential
+
+categories
+
+profile
+
+security-score
+
+Never use random strings.
+
+---
+
+# Caching Strategy
+
+Dashboard
+
+30 seconds
+
+Credentials
+
+1 minute
+
+Categories
+
+5 minutes
+
+Profile
+
+5 minutes
+
+Never cache login response.
+
+---
+
+# Query Flow
+
+Component
+
+↓
+
+useCredentials()
+
+↓
+
+credentialService
+
+↓
+
+Axios
+
+↓
+
+Backend
+
+↓
+
+React Query Cache
+
+↓
+
+UI
+
+---
+
+# Custom Hooks
+
+hooks/
+
+useAuth.ts
+
+useDashboard.ts
+
+useCredentials.ts
+
+useCategories.ts
+
+useProfile.ts
+
+usePassword.ts
+
+---
+
+# Hook Responsibilities
+
+Hooks contain
+
+Loading
+
+Error
+
+React Query
+
+Mutations
+
+Optimistic Updates
+
+Never place these inside UI components.
+
+---
+
+# useCredentials()
+
+Responsibilities
+
+Fetch credentials
+
+Delete credential
+
+Favorite credential
+
+Refresh cache
+
+Search
+
+Sorting
+
+Filtering
+
+Returns
+
+credentials
+
+loading
+
+error
+
+createCredential()
+
+updateCredential()
+
+deleteCredential()
+
+favorite()
+
+---
+
+# useDashboard()
+
+Responsibilities
+
+Dashboard cards
+
+Security score
+
+Charts
+
+Recent credentials
+
+Statistics
+
+---
+
+# useProfile()
+
+Responsibilities
+
+Profile
+
+Update
+
+Change Password
+
+---
+
+# Error Handling
+
+Never
+
+console.log(error)
+
+inside UI.
+
+Convert backend errors into user-friendly messages.
+
+Examples
+
+Invalid credentials
+
+Email already exists
+
+OTP expired
+
+Weak password
+
+Credential not found
+
+Server unavailable
+
+---
+
+# Toast Rules
+
+Success
+
+Green
+
+Error
+
+Red
+
+Warning
+
+Yellow
+
+Info
+
+Blue
+
+Never use alert().
+
+---
+
+# Loading Rules
+
+Every API request must support
+
+Loading
+
+Success
+
+Error
+
+Empty State
+
+Never leave blank pages.
+
+---
+
+# Retry Policy
+
+GET
+
+Retry once
+
+POST
+
+No retry
+
+DELETE
+
+No retry
+
+PUT
+
+No retry
+
+---
+
+# API Response Shape
+
+Assume backend returns
+
+status
+
+message
+
+data
+
+timestamp
+
+Frontend should depend only on data.
+
+Never tightly couple UI to backend response wrapper.
+
+---
+
+# Future Extensions
+
+Reserve architecture for
+
+Refresh Tokens
+
+2FA
+
+Biometric Login
+
+Google Login
+
+GitHub Login
+
+Shared Vault
+
+Offline Cache
+
+PWA
+
+Browser Extension
+
+---
+
+# Architecture Rule
+
+Components
+
+↓
+
+Hooks
+
+↓
+
+Services
+
+↓
+
+Axios
+
+↓
+
+Backend
+
+Only this direction is allowed.
+
+Violation of this rule is not permitted.
+
+---
+
+END OF PART 4
+
+
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 5 — Authentication, Context & Session Architecture
+
+---
+
+# Authentication Overview
+
+Authentication is based on JWT.
+
+Backend is responsible for
+
+• Login
+• Registration
+• Password Reset
+• OTP Verification
+• JWT Generation
+• JWT Validation
+
+Frontend is responsible for
+
+• Store Token
+• Check Login State
+• Protect Routes
+• Logout
+• Redirect User
+• Session Expiry Handling
+
+Never validate JWT manually.
+
+Backend is the source of truth.
+
+---
+
+# Authentication Flow
+
+Landing
+
+↓
+
+Login
+
+↓
+
+Backend
+
+↓
+
+JWT
+
+↓
+
+Store Token
+
+↓
+
+Load User
+
+↓
+
+Dashboard
+
+---
+
+# Login Flow
+
+User enters
+
+Email
+
+Password
+
+↓
+
+React Hook Form Validation
+
+↓
+
+useLogin()
+
+↓
+
+authService.login()
+
+↓
+
+Axios
+
+↓
+
+Backend
+
+↓
+
+JWT Response
+
+↓
+
+Save Token
+
+↓
+
+Fetch Profile
+
+↓
+
+Redirect Dashboard
+
+---
+
+# Registration Flow
+
+Register Form
+
+↓
+
+Validation
+
+↓
+
+Backend
+
+↓
+
+Registration Success
+
+↓
+
+Redirect Login
+
+Do NOT auto login after registration.
+
+---
+
+# Forgot Password Flow
+
+Login
+
+↓
+
+Forgot Password
+
+↓
+
+Enter Email
+
+↓
+
+Send OTP
+
+↓
+
+Verify OTP
+
+↓
+
+Reset Password
+
+↓
+
+Success Screen
+
+↓
+
+Login
+
+---
+
+# Session Flow
+
+User Opens App
+
+↓
+
+Check Token
+
+↓
+
+If Token Exists
+
+↓
+
+Load Profile
+
+↓
+
+Authenticated
+
+↓
+
+Dashboard
+
+Otherwise
+
+↓
+
+Landing
+
+---
+
+# Authentication Context
+
+Folder
+
+context/
+
+AuthContext.tsx
+
+---
+
+Responsibilities
+
+Store current user
+
+Store login state
+
+Provide logout()
+
+Provide login()
+
+Provide refreshUser()
+
+Nothing else.
+
+---
+
+# Context State
+
+Current User
+
+JWT Available
+
+isAuthenticated
+
+isLoading
+
+isInitialized
+
+---
+
+# Exposed Functions
+
+login()
+
+logout()
+
+refreshProfile()
+
+updateUser()
+
+clearSession()
+
+---
+
+# Context Should NOT
+
+Call Components
+
+Open Dialog
+
+Show Toast
+
+Navigate
+
+Perform Validation
+
+---
+
+# Token Storage
+
+Preferred
+
+localStorage
+
+Key
+
+ACCESS_TOKEN
+
+Future
+
+Refresh Token
+
+HTTP Only Cookie
+
+---
+
+# Local Storage Keys
+
+ACCESS_TOKEN
+
+USER_THEME
+
+SIDEBAR_STATE
+
+Never store
+
+Password
+
+OTP
+
+Security Score
+
+Credentials
+
+Sensitive Data
+
+---
+
+# Startup Flow
+
+main.tsx
+
+↓
+
+App
+
+↓
+
+AuthProvider
+
+↓
+
+Check Token
+
+↓
+
+Load User
+
+↓
+
+Render Routes
+
+Never render dashboard before auth initialization completes.
+
+---
+
+# AuthProvider Responsibilities
+
+Check existing token
+
+Load user profile
+
+Expose auth state
+
+Handle logout
+
+Handle session expiry
+
+---
+
+# Protected Route Logic
+
+IF
+
+Token Missing
+
+↓
+
+Redirect Login
+
+--------------------------------
+
+IF
+
+Token Exists
+
+↓
+
+Allow Navigation
+
+--------------------------------
+
+IF
+
+Token Invalid
+
+↓
+
+Logout
+
+↓
+
+Redirect Login
+
+--------------------------------
+
+IF
+
+Loading
+
+↓
+
+Fullscreen Loader
+
+---
+
+# Public Route Logic
+
+Already Logged In
+
+↓
+
+Dashboard
+
+Not Logged In
+
+↓
+
+Allow Login/Register
+
+---
+
+# Session Expiry
+
+Backend returns
+
+401 Unauthorized
+
+↓
+
+Axios Interceptor
+
+↓
+
+Clear Session
+
+↓
+
+Redirect Login
+
+↓
+
+Show Toast
+
+"Your session has expired. Please login again."
+
+---
+
+# Logout Flow
+
+User Clicks Logout
+
+↓
+
+Confirmation Dialog
+
+↓
+
+Clear Context
+
+↓
+
+Clear Local Storage
+
+↓
+
+Clear React Query Cache
+
+↓
+
+Navigate Login
+
+Never refresh browser.
+
+---
+
+# User Object
+
+Contains
+
+id
+
+name
+
+email
+
+profileImage
+
+createdAt
+
+updatedAt
+
+Do NOT store password.
+
+---
+
+# Authentication Hook
+
+hooks/
+
+useAuth.ts
+
+---
+
+Responsibilities
+
+Current User
+
+Login
+
+Logout
+
+Refresh User
+
+Loading State
+
+Authentication Status
+
+---
+
+Returns
+
+user
+
+login()
+
+logout()
+
+refreshProfile()
+
+isAuthenticated
+
+isLoading
+
+---
+
+# Authentication State Machine
+
+UNINITIALIZED
+
+↓
+
+CHECKING_SESSION
+
+↓
+
+AUTHENTICATED
+
+↓
+
+UNAUTHENTICATED
+
+↓
+
+LOGGING_OUT
+
+Never jump directly between states.
+
+---
+
+# Loading Screen
+
+Show
+
+Logo
+
+Spinner
+
+Loading Message
+
+Displayed only during
+
+Session Check
+
+Profile Fetch
+
+---
+
+# Remember Previous Route
+
+Example
+
+User opens
+
+/credentials/45
+
+↓
+
+Session Expired
+
+↓
+
+Redirect Login
+
+↓
+
+Successful Login
+
+↓
+
+Return
+
+/credentials/45
+
+Do not always redirect dashboard.
+
+---
+
+# Authorization
+
+Authentication
+
+↓
+
+Can user login?
+
+Authorization
+
+↓
+
+Can user access this resource?
+
+Keep both separate.
+
+---
+
+# Role Support (Future Ready)
+
+Current
+
+USER
+
+Future
+
+ADMIN
+
+SUPER_ADMIN
+
+Architecture must support multiple roles.
+
+---
+
+# Route Permissions
+
+Landing
+
+Public
+
+Login
+
+Public
+
+Register
+
+Public
+
+Forgot Password
+
+Public
+
+Dashboard
+
+Authenticated
+
+Credentials
+
+Authenticated
+
+Categories
+
+Authenticated
+
+Profile
+
+Authenticated
+
+Generator
+
+Authenticated
+
+Strength Checker
+
+Authenticated
+
+Settings
+
+Authenticated
+
+---
+
+# Theme Context
+
+Separate from AuthContext.
+
+Folder
+
+context/
+
+ThemeContext.tsx
+
+Responsibilities
+
+Current Theme
+
+Toggle Theme
+
+Persist Theme
+
+Do not mix with authentication.
+
+---
+
+# Future Contexts
+
+NotificationContext
+
+SettingsContext
+
+FeatureFlagContext
+
+Keep every concern isolated.
+
+---
+
+# React Query on Logout
+
+Clear
+
+Dashboard Cache
+
+Credential Cache
+
+Category Cache
+
+Profile Cache
+
+Password Cache
+
+Everything must be invalidated.
+
+---
+
+# Security Rules
+
+Never store password.
+
+Never store OTP.
+
+Never log JWT.
+
+Never expose backend errors directly.
+
+Never trust frontend validation.
+
+Backend validation is final.
+
+---
+
+# Error Messages
+
+Wrong
+
+java.lang.RuntimeException...
+
+Correct
+
+Invalid email or password.
+
+--------------------------------
+
+Wrong
+
+SQLException...
+
+Correct
+
+Something went wrong.
+
+Please try again.
+
+---
+
+# Authentication Folder Structure
+
+context/
+
+AuthContext.tsx
+
+ThemeContext.tsx
+
+hooks/
+
+useAuth.ts
+
+services/
+
+authService.ts
+
+routes/
+
+ProtectedRoute.tsx
+
+PublicRoute.tsx
+
+lib/
+
+axios.ts
+
+---
+
+# Authentication Architecture
+
+Component
+
+↓
+
+useAuth()
+
+↓
+
+AuthContext
+
+↓
+
+authService
+
+↓
+
+Axios
+
+↓
+
+Spring Boot
+
+↓
+
+JWT
+
+↓
+
+Context Update
+
+↓
+
+React Query Refresh
+
+↓
+
+UI
+
+Only this direction is allowed.
+
+---
+
+END OF PART 5
+
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 6 — Credential Module Architecture
+
+---
+
+# Module Purpose
+
+The Credential Module is the heart of the application.
+
+It allows users to securely manage their saved credentials.
+
+Examples
+
+Google
+
+GitHub
+
+LinkedIn
+
+Amazon
+
+Netflix
+
+Bank Accounts
+
+Office365
+
+AWS
+
+etc.
+
+Everything revolves around this module.
+
+---
+
+# Responsibilities
+
+The module should support
+
+✓ View Credentials
+
+✓ Create Credential
+
+✓ Edit Credential
+
+✓ Delete Credential
+
+✓ Search
+
+✓ Filter
+
+✓ Sort
+
+✓ Favorite
+
+✓ Copy Username
+
+✓ Copy Password
+
+✓ Reveal Password
+
+✓ Category Assignment
+
+✓ Pagination (Future)
+
+✓ Import/Export (Future)
+
+---
+
+# Folder Structure
+
+pages/
+
+credential/
+
+CredentialListPage.tsx
+
+CredentialCreatePage.tsx
+
+CredentialEditPage.tsx
+
+CredentialDetailsPage.tsx
+
+------------------------------------------------
+
+components/
+
+credential/
+
+CredentialCard.tsx
+
+CredentialGrid.tsx
+
+CredentialTable.tsx
+
+CredentialForm.tsx
+
+CredentialDialog.tsx
+
+CredentialHeader.tsx
+
+CredentialToolbar.tsx
+
+CredentialSearch.tsx
+
+CredentialFilter.tsx
+
+CredentialSort.tsx
+
+CredentialEmptyState.tsx
+
+CredentialDeleteDialog.tsx
+
+CredentialDetailsDialog.tsx
+
+CredentialActions.tsx
+
+CredentialPagination.tsx
+
+FavoriteButton.tsx
+
+RevealPasswordButton.tsx
+
+CopyPasswordButton.tsx
+
+CopyUsernameButton.tsx
+
+WebsiteLogo.tsx
+
+------------------------------------------------
+
+hooks/
+
+useCredentials.ts
+
+------------------------------------------------
+
+services/
+
+credentialService.ts
+
+------------------------------------------------
+
+types/
+
+Credential.ts
+
+CredentialRequest.ts
+
+CredentialResponse.ts
+
+---
+
+# Credential Object
+
+id
+
+websiteName
+
+websiteUrl
+
+username
+
+encryptedPassword
+
+categoryId
+
+favorite
+
+createdAt
+
+updatedAt
+
+---
+
+# Credential List Page
+
+Purpose
+
+Display every credential.
+
+Contains
+
+Header
+
+Toolbar
+
+Search
+
+Filter
+
+Sort
+
+Grid/Table Toggle
+
+Credential Grid
+
+Pagination
+
+Floating Action Button (Mobile)
+
+---
+
+# Credential Header
+
+Contains
+
+Title
+
+Subtitle
+
+Add Credential Button
+
+Total Credentials Count
+
+---
+
+# Credential Toolbar
+
+Contains
+
+Search Bar
+
+Category Filter
+
+Sort Dropdown
+
+Favorite Filter
+
+View Toggle
+
+---
+
+# Credential Card
+
+Shows
+
+Website Logo
+
+Website Name
+
+Username
+
+Masked Password
+
+Category Badge
+
+Favorite Icon
+
+Updated Date
+
+Quick Actions
+
+Card should never exceed 320px width.
+
+---
+
+# Credential Actions
+
+Contains
+
+Copy Username
+
+Copy Password
+
+Reveal Password
+
+Edit
+
+Delete
+
+More Menu
+
+Never navigate directly.
+
+Emit callbacks only.
+
+---
+
+# Credential Details Dialog
+
+Purpose
+
+View complete credential.
+
+Contains
+
+Website
+
+Username
+
+Password
+
+Notes (Future)
+
+Created Date
+
+Updated Date
+
+Buttons
+
+Edit
+
+Delete
+
+Copy
+
+Reveal
+
+---
+
+# Credential Form
+
+Shared by
+
+Create
+
+Edit
+
+Fields
+
+Website Name
+
+Website URL
+
+Username / Email
+
+Password
+
+Category
+
+Favorite
+
+Buttons
+
+Save
+
+Cancel
+
+Validation only.
+
+No API.
+
+---
+
+# Form Validation
+
+Website Name
+
+Required
+
+Maximum 100 Characters
+
+Website URL
+
+Optional
+
+Valid URL
+
+Username
+
+Required
+
+Maximum 100 Characters
+
+Password
+
+Required
+
+Minimum 8 Characters
+
+Category
+
+Required
+
+---
+
+# Search
+
+Search should match
+
+Website Name
+
+Username
+
+Category
+
+Search must be case-insensitive.
+
+Debounce
+
+300ms
+
+---
+
+# Filter
+
+Category
+
+Favorites
+
+Recently Added
+
+Recently Updated
+
+All
+
+Filters must be combinable.
+
+---
+
+# Sorting
+
+Alphabetical
+
+Newest
+
+Oldest
+
+Last Updated
+
+Favorite First
+
+---
+
+# Favorite Button
+
+States
+
+Filled
+
+Outlined
+
+Click
+
+↓
+
+Toggle Favorite
+
+↓
+
+Optimistic UI
+
+↓
+
+Backend
+
+↓
+
+Rollback on Failure
+
+---
+
+# Reveal Password
+
+Initial State
+
+Hidden
+
+********
+
+Click
+
+↓
+
+Backend (if required)
+
+↓
+
+Reveal
+
+↓
+
+Hide Again
+
+Never auto reveal all passwords.
+
+---
+
+# Copy Username
+
+Click
+
+↓
+
+Clipboard
+
+↓
+
+Toast
+
+Username copied
+
+---
+
+# Copy Password
+
+Click
+
+↓
+
+Clipboard
+
+↓
+
+Toast
+
+Password copied
+
+Never display password in toast.
+
+---
+
+# Delete Flow
+
+Delete
+
+↓
+
+Confirmation Dialog
+
+↓
+
+Delete Mutation
+
+↓
+
+Invalidate Cache
+
+↓
+
+Refresh List
+
+↓
+
+Success Toast
+
+---
+
+# Create Flow
+
+Add Button
+
+↓
+
+Credential Dialog
+
+↓
+
+Validation
+
+↓
+
+Mutation
+
+↓
+
+Invalidate Query
+
+↓
+
+Close Dialog
+
+↓
+
+Toast
+
+↓
+
+Refresh Grid
+
+---
+
+# Edit Flow
+
+Edit Button
+
+↓
+
+Dialog
+
+↓
+
+Existing Data
+
+↓
+
+Save
+
+↓
+
+Mutation
+
+↓
+
+Refresh Cache
+
+↓
+
+Close Dialog
+
+---
+
+# Empty State
+
+Illustration
+
+Title
+
+No Credentials Found
+
+Subtitle
+
+Start by saving your first credential.
+
+Primary Button
+
+Add Credential
+
+---
+
+# Loading State
+
+Skeleton Cards
+
+Never show blank screen.
+
+---
+
+# Error State
+
+Illustration
+
+Retry Button
+
+Friendly Message
+
+---
+
+# View Modes
+
+Grid
+
+Desktop Default
+
+--------------------------------
+
+Table
+
+Optional
+
+Desktop Only
+
+--------------------------------
+
+Cards
+
+Mobile
+
+---
+
+# Responsive Rules
+
+Desktop
+
+4 Cards Per Row
+
+--------------------------------
+
+Laptop
+
+3 Cards
+
+--------------------------------
+
+Tablet
+
+2 Cards
+
+--------------------------------
+
+Mobile
+
+1 Card
+
+---
+
+# Pagination
+
+Current
+
+Client Side
+
+Future
+
+Server Side
+
+Component should support both.
+
+---
+
+# Custom Hook
+
+useCredentials()
+
+Responsibilities
+
+Load Credentials
+
+Create
+
+Update
+
+Delete
+
+Favorite
+
+Search
+
+Sort
+
+Filter
+
+Refresh
+
+Returns
+
+credentials
+
+filteredCredentials
+
+loading
+
+error
+
+createCredential()
+
+updateCredential()
+
+deleteCredential()
+
+toggleFavorite()
+
+refresh()
+
+---
+
+# Service Methods
+
+getAll()
+
+getById()
+
+create()
+
+update()
+
+delete()
+
+favorite()
+
+search()
+
+---
+
+# Query Keys
+
+credentials
+
+credential
+
+favorites
+
+recentCredentials
+
+---
+
+# Performance Rules
+
+Use memoization for cards.
+
+Virtualize lists when count > 500.
+
+Lazy load dialogs.
+
+Avoid unnecessary re-renders.
+
+---
+
+# Security Rules
+
+Never store decrypted password.
+
+Never log credentials.
+
+Never expose encrypted password in UI.
+
+Mask password by default.
+
+Clipboard operations should never be logged.
+
+---
+
+# Future Features
+
+Bulk Delete
+
+Bulk Favorite
+
+Bulk Export
+
+Bulk Import
+
+Password History
+
+Password Expiry Reminder
+
+Duplicate Detection
+
+Pinned Credentials
+
+Tags
+
+Custom Icons
+
+---
+
+# Architecture Flow
+
+CredentialListPage
+
+↓
+
+CredentialToolbar
+
+↓
+
+CredentialGrid
+
+↓
+
+CredentialCard
+
+↓
+
+Action Button
+
+↓
+
+useCredentials()
+
+↓
+
+credentialService
+
+↓
+
+Axios
+
+↓
+
+Spring Boot
+
+↓
+
+Database
+
+Only this direction is allowed.
+
+---
+
+END OF PART 6
+
+
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 7 — Dashboard Module Architecture
+
+---
+
+# Module Purpose
+
+Dashboard is the application's command center.
+
+It should provide an overview of the user's vault without requiring navigation to other pages.
+
+Within 5 seconds the user should know
+
+• Total Credentials
+• Security Health
+• Weak Passwords
+• Recent Activity
+• Favorite Credentials
+
+The dashboard should never feel empty.
+
+---
+
+# Dashboard Layout
+
+Dashboard
+
+│
+
+├── Dashboard Header
+
+├── Statistics Cards
+
+├── Security Score
+
+├── Quick Actions
+
+├── Recent Credentials
+
+├── Activity Timeline
+
+├── Password Health
+
+└── Security Tips
+
+---
+
+# Folder Structure
+
+pages/
+
+dashboard/
+
+DashboardPage.tsx
+
+--------------------------------
+
+components/
+
+dashboard/
+
+DashboardHeader.tsx
+
+StatsGrid.tsx
+
+StatCard.tsx
+
+SecurityScoreCard.tsx
+
+QuickActions.tsx
+
+RecentCredentials.tsx
+
+RecentCredentialCard.tsx
+
+PasswordHealthCard.tsx
+
+WeakPasswordAlert.tsx
+
+ActivityTimeline.tsx
+
+ActivityItem.tsx
+
+SecurityTips.tsx
+
+DashboardSkeleton.tsx
+
+DashboardError.tsx
+
+EmptyDashboard.tsx
+
+WelcomeBanner.tsx
+
+GreetingMessage.tsx
+
+------------------------------------------------
+
+hooks/
+
+useDashboard.ts
+
+------------------------------------------------
+
+services/
+
+dashboardService.ts
+
+------------------------------------------------
+
+types/
+
+Dashboard.ts
+
+DashboardStats.ts
+
+Activity.ts
+
+---
+
+# Dashboard Header
+
+Purpose
+
+Display greeting and page heading.
+
+Contains
+
+Greeting Message
+
+Current Date
+
+Refresh Button
+
+Profile Avatar
+
+Example
+
+Good Morning, Bhushan
+
+Welcome back.
+
+You currently have 42 credentials secured.
+
+---
+
+# Greeting Logic
+
+Morning
+
+Good Morning
+
+Afternoon
+
+Good Afternoon
+
+Evening
+
+Good Evening
+
+Never hardcode greeting.
+
+Generate dynamically.
+
+---
+
+# Statistics Grid
+
+Displays summary cards.
+
+Cards
+
+Total Credentials
+
+Categories
+
+Favorites
+
+Weak Passwords
+
+Each card clickable.
+
+---
+
+# Stat Card
+
+Contains
+
+Icon
+
+Title
+
+Value
+
+Short Description
+
+Trend (future)
+
+Example
+
+Total Credentials
+
+42
+
+Stored Securely
+
+---
+
+# Security Score Card
+
+Purpose
+
+Show overall vault health.
+
+Display
+
+Circular Progress
+
+Score
+
+Percentage
+
+Suggestions
+
+Example
+
+82%
+
+Strong
+
+Suggestions
+
+Use stronger passwords
+
+Enable unique passwords
+
+Remove duplicates
+
+---
+
+# Password Health Card
+
+Displays
+
+Strong Passwords
+
+Medium Passwords
+
+Weak Passwords
+
+Very Weak Passwords
+
+Represent using progress bars.
+
+---
+
+# Weak Password Alert
+
+Shown only if
+
+Weak Password Count > 0
+
+Displays
+
+Warning Icon
+
+Count
+
+Button
+
+Review Now
+
+Hidden otherwise.
+
+---
+
+# Quick Actions
+
+Contains
+
+Add Credential
+
+Generate Password
+
+Analyze Password
+
+Manage Categories
+
+Each action displayed as a large button.
+
+Should support keyboard shortcuts in future.
+
+---
+
+# Recent Credentials
+
+Shows
+
+Latest 5 credentials
+
+Each item contains
+
+Website Logo
+
+Website Name
+
+Username
+
+Updated Time
+
+Favorite Badge
+
+Click
+
+↓
+
+Open Credential Details
+
+---
+
+# Recent Credential Card
+
+Contains
+
+Website Icon
+
+Website Name
+
+Username
+
+Category
+
+Updated Time
+
+Quick Copy Button
+
+Reveal Button
+
+---
+
+# Activity Timeline
+
+Purpose
+
+Display recent user actions.
+
+Examples
+
+Added GitHub Credential
+
+Updated Gmail Password
+
+Deleted Netflix Credential
+
+Created Category
+
+Future
+
+Exported Vault
+
+Imported Vault
+
+Shared Vault
+
+---
+
+# Activity Item
+
+Contains
+
+Action Icon
+
+Message
+
+Timestamp
+
+Clickable (future)
+
+---
+
+# Security Tips
+
+Static recommendations.
+
+Examples
+
+Use unique passwords.
+
+Update old passwords.
+
+Enable two-factor authentication.
+
+Review weak passwords.
+
+Rotate passwords regularly.
+
+Display one tip at a time.
+
+Randomize every session.
+
+---
+
+# Welcome Banner
+
+Displayed only
+
+First Login
+
+or
+
+First Visit
+
+Contains
+
+Welcome Message
+
+Small Illustration
+
+CTA
+
+Add First Credential
+
+Hide once credentials exist.
+
+---
+
+# Empty Dashboard
+
+If
+
+Credential Count == 0
+
+Display
+
+Illustration
+
+Title
+
+Your Vault is Empty
+
+Subtitle
+
+Start by adding your first credential.
+
+Primary Button
+
+Add Credential
+
+Secondary Button
+
+Generate Password
+
+---
+
+# Dashboard Skeleton
+
+Displayed while loading.
+
+Contains
+
+Skeleton Cards
+
+Skeleton Lists
+
+Skeleton Charts
+
+Never show blank screen.
+
+---
+
+# Dashboard Error
+
+If dashboard API fails.
+
+Display
+
+Illustration
+
+Friendly Message
+
+Retry Button
+
+Never expose backend exception.
+
+---
+
+# Data Required
+
+Dashboard requires
+
+Total Credentials
+
+Favorite Count
+
+Category Count
+
+Weak Password Count
+
+Security Score
+
+Recent Credentials
+
+Recent Activity
+
+Password Statistics
+
+---
+
+# Dashboard Hook
+
+hooks/
+
+useDashboard.ts
+
+Responsibilities
+
+Load Dashboard
+
+Refresh Dashboard
+
+Loading State
+
+Error State
+
+Cache
+
+Invalidate
+
+Returns
+
+dashboard
+
+loading
+
+error
+
+refresh()
+
+---
+
+# Dashboard Service
+
+dashboardService.ts
+
+Functions
+
+getDashboard()
+
+getStatistics()
+
+getRecentCredentials()
+
+getActivity()
+
+getSecurityScore()
+
+---
+
+# Refresh Behaviour
+
+Manual Refresh Button
+
+↓
+
+Invalidate Query
+
+↓
+
+Reload Dashboard
+
+↓
+
+Update UI
+
+Do not refresh browser.
+
+---
+
+# React Query
+
+Query Key
+
+dashboard
+
+Cache Time
+
+30 seconds
+
+Stale Time
+
+30 seconds
+
+---
+
+# Responsive Layout
+
+Desktop
+
+4 Stats Cards
+
+2 Column Content
+
+--------------------------------
+
+Laptop
+
+2 Stats Cards
+
+2 Column Content
+
+--------------------------------
+
+Tablet
+
+2 Cards
+
+Single Column
+
+--------------------------------
+
+Mobile
+
+1 Card Per Row
+
+Everything stacked vertically.
+
+---
+
+# Performance Rules
+
+Dashboard should make
+
+ONE API call
+
+preferred
+
+instead of
+
+5 separate API calls.
+
+Backend should aggregate dashboard data whenever possible.
+
+---
+
+# Accessibility
+
+Cards keyboard focusable.
+
+Buttons accessible.
+
+ARIA labels for charts.
+
+High contrast text.
+
+---
+
+# Future Widgets
+
+Vault Usage
+
+Password Expiry
+
+Duplicate Passwords
+
+Pinned Credentials
+
+Security News
+
+Dark Web Monitor
+
+Upcoming Reminders
+
+Login History
+
+Trusted Devices
+
+Storage Usage
+
+---
+
+# Dashboard Flow
+
+DashboardPage
+
+↓
+
+useDashboard()
+
+↓
+
+dashboardService
+
+↓
+
+Axios
+
+↓
+
+Backend
+
+↓
+
+Dashboard Response
+
+↓
+
+Render Widgets
+
+Only this flow is allowed.
+
+---
+
+END OF PART 7
+
+
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 8 — Category, Profile & Password Modules
+
+---
+
+# Modules Covered
+
+This part defines the architecture for
+
+• Category Module
+• Profile Module
+• Password Generator
+• Password Strength Analyzer
+
+These modules should remain completely independent.
+
+They should communicate only through hooks and services.
+
+---
+
+##########################################################
+################### CATEGORY MODULE ######################
+##########################################################
+
+# Purpose
+
+Categories help users organize credentials.
+
+Examples
+
+Social
+
+Development
+
+Finance
+
+Shopping
+
+Entertainment
+
+Education
+
+Work
+
+Personal
+
+---
+
+# Folder Structure
+
+pages/
+
+category/
+
+CategoryPage.tsx
+
+CategoryCreatePage.tsx
+
+CategoryEditPage.tsx
+
+--------------------------------
+
+components/
+
+category/
+
+CategoryGrid.tsx
+
+CategoryCard.tsx
+
+CategoryForm.tsx
+
+CategoryDialog.tsx
+
+CategoryHeader.tsx
+
+CategoryToolbar.tsx
+
+CategoryEmptyState.tsx
+
+CategoryDeleteDialog.tsx
+
+CategorySkeleton.tsx
+
+------------------------------------------------
+
+hooks/
+
+useCategories.ts
+
+------------------------------------------------
+
+services/
+
+categoryService.ts
+
+------------------------------------------------
+
+types/
+
+Category.ts
+
+---
+
+# Category Object
+
+id
+
+name
+
+color
+
+icon
+
+credentialCount
+
+createdAt
+
+updatedAt
+
+---
+
+# Category Page
+
+Contains
+
+Header
+
+Search
+
+Category Grid
+
+Add Button
+
+Empty State
+
+Loading State
+
+---
+
+# Category Card
+
+Displays
+
+Category Icon
+
+Category Name
+
+Credential Count
+
+Edit Button
+
+Delete Button
+
+Color Badge
+
+---
+
+# Category Form
+
+Fields
+
+Category Name
+
+Category Color
+
+Category Icon
+
+Validation
+
+Only UI.
+
+No API.
+
+---
+
+# Delete Rules
+
+Category cannot be deleted if credentials exist.
+
+Show warning.
+
+Ask user to move credentials first.
+
+---
+
+# Category Hook
+
+Returns
+
+categories
+
+loading
+
+error
+
+createCategory()
+
+updateCategory()
+
+deleteCategory()
+
+refresh()
+
+---
+
+##########################################################
+#################### PROFILE MODULE ######################
+##########################################################
+
+# Purpose
+
+Allows user to manage personal information.
+
+---
+
+# Folder Structure
+
+pages/
+
+profile/
+
+ProfilePage.tsx
+
+SettingsPage.tsx
+
+--------------------------------
+
+components/
+
+profile/
+
+ProfileCard.tsx
+
+ProfileHeader.tsx
+
+ProfileAvatar.tsx
+
+ProfileInformation.tsx
+
+EditProfileForm.tsx
+
+ChangePasswordForm.tsx
+
+AccountStatistics.tsx
+
+SecuritySettings.tsx
+
+DangerZone.tsx
+
+ProfileSkeleton.tsx
+
+------------------------------------------------
+
+hooks/
+
+useProfile.ts
+
+------------------------------------------------
+
+services/
+
+profileService.ts
+
+---
+
+# Profile Page Layout
+
+Profile Header
+
+↓
+
+Avatar
+
+↓
+
+Information Card
+
+↓
+
+Account Statistics
+
+↓
+
+Security Settings
+
+↓
+
+Danger Zone
+
+---
+
+# Profile Header
+
+Contains
+
+User Name
+
+Email
+
+Join Date
+
+Avatar
+
+Edit Button
+
+---
+
+# Profile Information
+
+Fields
+
+Name
+
+Email
+
+Phone (Future)
+
+Timezone (Future)
+
+Language (Future)
+
+---
+
+# Edit Profile Form
+
+Editable
+
+Name
+
+Profile Picture (Future)
+
+Validation
+
+React Hook Form
+
+Zod
+
+---
+
+# Change Password Form
+
+Fields
+
+Current Password
+
+New Password
+
+Confirm Password
+
+Password Strength
+
+Buttons
+
+Save
+
+Cancel
+
+---
+
+# Account Statistics
+
+Displays
+
+Total Credentials
+
+Categories
+
+Favorites
+
+Security Score
+
+Member Since
+
+---
+
+# Security Settings
+
+Future
+
+2FA
+
+Login Alerts
+
+Trusted Devices
+
+Session History
+
+Biometric Login
+
+---
+
+# Danger Zone
+
+Future Ready
+
+Delete Account
+
+Export Vault
+
+Deactivate Account
+
+Red bordered card.
+
+Confirmation required.
+
+---
+
+##########################################################
+################ PASSWORD GENERATOR ######################
+##########################################################
+
+# Purpose
+
+Generate strong random passwords.
+
+Must work completely offline.
+
+No backend call required unless analytics is added later.
+
+---
+
+# Folder Structure
+
+pages/
+
+password/
+
+PasswordGeneratorPage.tsx
+
+--------------------------------
+
+components/
+
+password/
+
+PasswordGeneratorCard.tsx
+
+PasswordOptions.tsx
+
+GeneratedPassword.tsx
+
+CopyPasswordButton.tsx
+
+PasswordLengthSlider.tsx
+
+PasswordHistory.tsx
+
+---
+
+# Generator Options
+
+Password Length
+
+Uppercase
+
+Lowercase
+
+Numbers
+
+Symbols
+
+Exclude Similar Characters (Future)
+
+Exclude Ambiguous Characters (Future)
+
+---
+
+# Generated Password
+
+Displays
+
+Generated Password
+
+Strength
+
+Entropy (Future)
+
+Copy Button
+
+Regenerate Button
+
+---
+
+# Password Rules
+
+Minimum Length
+
+8
+
+Maximum Length
+
+64
+
+Default
+
+16
+
+---
+
+# Copy Flow
+
+Copy
+
+↓
+
+Clipboard
+
+↓
+
+Toast
+
+Password copied successfully.
+
+---
+
+##########################################################
+############### PASSWORD STRENGTH MODULE #################
+##########################################################
+
+# Purpose
+
+Analyze password quality.
+
+Can be used before saving credentials.
+
+---
+
+# Folder Structure
+
+pages/
+
+password/
+
+PasswordStrengthPage.tsx
+
+--------------------------------
+
+components/
+
+password/
+
+PasswordStrengthMeter.tsx
+
+PasswordAnalyzer.tsx
+
+StrengthBar.tsx
+
+SuggestionCard.tsx
+
+Checklist.tsx
+
+---
+
+# Input
+
+Password
+
+↓
+
+Analysis
+
+↓
+
+Strength Score
+
+↓
+
+Suggestions
+
+---
+
+# Strength Levels
+
+Very Weak
+
+Weak
+
+Medium
+
+Strong
+
+Very Strong
+
+---
+
+# Suggestions
+
+Minimum Length
+
+Use Uppercase
+
+Use Lowercase
+
+Use Numbers
+
+Use Symbols
+
+Avoid Common Words
+
+Avoid Repeated Characters
+
+---
+
+# Strength Meter
+
+Progress Bar
+
+Score
+
+Color
+
+Feedback
+
+---
+
+# Analyzer Rules
+
+Run
+
+On Every Change
+
+Debounce
+
+150ms
+
+Never block typing.
+
+---
+
+##########################################################
+################### RESPONSIVE RULES #####################
+##########################################################
+
+Desktop
+
+Multiple columns
+
+--------------------------------
+
+Tablet
+
+Two columns
+
+--------------------------------
+
+Mobile
+
+Single column
+
+Cards stacked vertically.
+
+---
+
+##########################################################
+##################### LOADING STATES #####################
+##########################################################
+
+Every module must support
+
+Loading
+
+Error
+
+Empty
+
+Success
+
+Never leave blank containers.
+
+---
+
+##########################################################
+#################### FUTURE FEATURES #####################
+##########################################################
+
+Profile
+
+Profile Photo Upload
+
+Dark Mode
+
+Language Selection
+
+Notification Preferences
+
+Email Verification
+
+Security Logs
+
+Sessions
+
+Category
+
+Nested Categories
+
+Pinned Categories
+
+Archive
+
+Password
+
+History
+
+Generator Templates
+
+Enterprise Policies
+
+Bulk Generation
+
+Security
+
+Breach Detection
+
+HIBP Integration
+
+Password Expiry
+
+Duplicate Password Detection
+
+---
+
+##########################################################
+##################### MODULE FLOW ########################
+##########################################################
+
+Page
+
+↓
+
+Component
+
+↓
+
+Hook
+
+↓
+
+Service
+
+↓
+
+Axios
+
+↓
+
+Backend
+
+↓
+
+Response
+
+↓
+
+React Query
+
+↓
+
+UI
+
+Every feature module must follow the same architecture.
+
+No module should bypass hooks or services.
+
+---
+
+END OF PART 8
+
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 9 — Design System, UI/UX Standards & Coding Guidelines
+
+---
+
+##########################################################
+#################### DESIGN PHILOSOPHY ###################
+##########################################################
+
+The application should look like a premium SaaS product.
+
+Inspired by
+
+• Apple
+• Proton Pass
+• Bitwarden
+• Linear
+• Vercel
+• Notion
+
+Avoid
+
+❌ Bootstrap look
+
+❌ AdminLTE
+
+❌ Colorful dashboards
+
+❌ Large gradients
+
+❌ Random colors
+
+❌ Heavy shadows
+
+❌ Rounded 999px everywhere
+
+---
+
+##########################################################
+######################## COLORS ##########################
+##########################################################
+
+Primary
+
+#2563EB
+
+Primary Hover
+
+#1D4ED8
+
+Background
+
+#FFFFFF
+
+Surface
+
+#FAFAFA
+
+Card
+
+#FFFFFF
+
+Border
+
+#E5E7EB
+
+Heading
+
+#111827
+
+Body
+
+#4B5563
+
+Muted
+
+#9CA3AF
+
+Success
+
+#16A34A
+
+Warning
+
+#F59E0B
+
+Danger
+
+#DC2626
+
+Info
+
+#0284C7
+
+---
+
+##########################################################
+######################## BUTTONS #########################
+##########################################################
+
+Primary Button
+
+Filled
+
+Blue Background
+
+White Text
+
+--------------------------------
+
+Secondary Button
+
+White Background
+
+Blue Border
+
+Blue Text
+
+--------------------------------
+
+Ghost Button
+
+Transparent
+
+--------------------------------
+
+Danger Button
+
+Red
+
+--------------------------------
+
+Icon Button
+
+Square
+
+40px
+
+Rounded
+
+--------------------------------
+
+Rules
+
+Every button
+
+Hover
+
+Focus
+
+Disabled
+
+Loading
+
+must exist.
+
+Never create buttons without loading state.
+
+---
+
+##########################################################
+######################## INPUTS ##########################
+##########################################################
+
+All inputs
+
+Height
+
+44px
+
+Rounded
+
+10px
+
+Border
+
+Gray
+
+Focus
+
+Blue Ring
+
+Placeholder
+
+Gray
+
+Disabled
+
+Gray Background
+
+Error
+
+Red Border
+
+Helper Text
+
+Below Input
+
+Never inside placeholder.
+
+---
+
+##########################################################
+######################## CARDS ###########################
+##########################################################
+
+Cards
+
+White
+
+Rounded
+
+12px
+
+Padding
+
+24px
+
+Shadow
+
+Small
+
+Border
+
+Gray
+
+Hover
+
+Small Lift
+
+Never use dark shadows.
+
+---
+
+##########################################################
+######################## ICONS ###########################
+##########################################################
+
+Lucide React
+
+Only.
+
+Default
+
+20px
+
+Large
+
+24px
+
+Small
+
+16px
+
+Icons must always accompany actions.
+
+Never use emoji.
+
+---
+
+##########################################################
+###################### ANIMATIONS ########################
+##########################################################
+
+Use
+
+Framer Motion
+
+Future Ready
+
+Current
+
+CSS Transition
+
+Duration
+
+200ms
+
+Animation Types
+
+Fade
+
+Slide
+
+Scale
+
+Never bounce.
+
+Never flashy animations.
+
+---
+
+##########################################################
+######################## SPACING #########################
+##########################################################
+
+Only use
+
+4
+
+8
+
+12
+
+16
+
+20
+
+24
+
+32
+
+40
+
+48
+
+64
+
+96
+
+Never random spacing.
+
+---
+
+##########################################################
+######################## GRID ############################
+##########################################################
+
+Desktop
+
+12 Columns
+
+Tablet
+
+8 Columns
+
+Mobile
+
+4 Columns
+
+Use Tailwind Grid.
+
+Avoid nested grids where possible.
+
+---
+
+##########################################################
+####################### TYPOGRAPHY #######################
+##########################################################
+
+Headings
+
+DM Serif Display
+
+Body
+
+Inter
+
+Buttons
+
+Inter
+
+Forms
+
+Inter
+
+Tables
+
+Inter
+
+Never mix fonts.
+
+---
+
+##########################################################
+###################### PAGE STRUCTURE ####################
+##########################################################
+
+Every page should follow
+
+Header
+
+↓
+
+Toolbar
+
+↓
+
+Content
+
+↓
+
+Footer (optional)
+
+No page should start directly with cards.
+
+---
+
+##########################################################
+####################### TABLES ###########################
+##########################################################
+
+Tables should support
+
+Sorting
+
+Search
+
+Pagination
+
+Empty State
+
+Loading
+
+Responsive Scroll
+
+---
+
+##########################################################
+###################### RESPONSIVE ########################
+##########################################################
+
+Desktop
+
+1280+
+
+Laptop
+
+1024+
+
+Tablet
+
+768+
+
+Mobile
+
+Below 768
+
+No horizontal scrolling.
+
+---
+
+##########################################################
+#################### EMPTY STATES ########################
+##########################################################
+
+Every module needs
+
+Illustration
+
+Title
+
+Subtitle
+
+Primary Button
+
+Never display
+
+"No Data"
+
+alone.
+
+---
+
+##########################################################
+#################### LOADING STATES ######################
+##########################################################
+
+Skeleton
+
+Preferred
+
+Spinner
+
+Only for
+
+Dialogs
+
+Small Actions
+
+Never spinner for entire page.
+
+---
+
+##########################################################
+###################### ERROR STATES ######################
+##########################################################
+
+Every error should contain
+
+Illustration
+
+Friendly Message
+
+Retry Button
+
+Never display
+
+Stack Trace
+
+Exception
+
+SQL Error
+
+---
+
+##########################################################
+######################## TOASTS ##########################
+##########################################################
+
+Library
+
+Sonner
+
+Success
+
+Green
+
+Error
+
+Red
+
+Warning
+
+Yellow
+
+Info
+
+Blue
+
+Toast Position
+
+Top Right
+
+Maximum
+
+One Toast
+
+Queue Others
+
+---
+
+##########################################################
+###################### ACCESSIBILITY #####################
+##########################################################
+
+Every Button
+
+Keyboard Accessible
+
+Every Input
+
+Label
+
+Every Image
+
+Alt Text
+
+Every Dialog
+
+Focus Trap
+
+Every Dropdown
+
+Arrow Key Navigation
+
+Minimum Touch Target
+
+44px
+
+---
+
+##########################################################
+###################### FORM RULES ########################
+##########################################################
+
+Validation
+
+Real Time
+
+Required Fields
+
+Marked
+
+Error Below Input
+
+Never
+
+Alert()
+
+Never
+
+Browser Validation
+
+Always
+
+React Hook Form
+
++
+
+Zod
+
+---
+
+##########################################################
+###################### CODE STYLE ########################
+##########################################################
+
+Language
+
+TypeScript
+
+Never use
+
+any
+
+unless unavoidable.
+
+Prefer
+
+Interfaces
+
+over
+
+Types
+
+for models.
+
+Use
+
+const
+
+whenever possible.
+
+No magic numbers.
+
+---
+
+##########################################################
+###################### FILE RULES ########################
+##########################################################
+
+One Component
+
+One File
+
+One Hook
+
+One File
+
+One Service
+
+One File
+
+Never combine unrelated logic.
+
+---
+
+##########################################################
+#################### IMPORT ORDER ########################
+##########################################################
+
+React
+
+↓
+
+Libraries
+
+↓
+
+Components
+
+↓
+
+Hooks
+
+↓
+
+Services
+
+↓
+
+Types
+
+↓
+
+Utils
+
+↓
+
+Styles
+
+Maintain same order everywhere.
+
+---
+
+##########################################################
+###################### NAMING ############################
+##########################################################
+
+Components
+
+PascalCase
+
+Hooks
+
+camelCase
+
+Services
+
+camelCase
+
+Types
+
+PascalCase
+
+Constants
+
+UPPER_CASE
+
+CSS Classes
+
+Tailwind Only
+
+---
+
+##########################################################
+#################### FOLDER RULES ########################
+##########################################################
+
+No component should access another module directly.
+
+Example
+
+Credential
+
+cannot import
+
+Profile
+
+Use common components instead.
+
+---
+
+##########################################################
+#################### GIT CONVENTION ######################
+##########################################################
+
+Branch
+
+feature/dashboard
+
+feature/profile
+
+feature/password
+
+feature/categories
+
+Commits
+
+feat:
+
+fix:
+
+refactor:
+
+style:
+
+docs:
+
+test:
+
+Never
+
+Final Final Latest2.tsx
+
+---
+
+##########################################################
+#################### TESTING READY #######################
+##########################################################
+
+Architecture should support
+
+Vitest
+
+React Testing Library
+
+Future
+
+Playwright
+
+Without restructuring folders.
+
+---
+
+##########################################################
+#################### PERFORMANCE #########################
+##########################################################
+
+Lazy Load Pages
+
+Memoize Expensive Components
+
+Debounce Search
+
+Avoid Unnecessary Re-renders
+
+Use React Query Cache
+
+Split Large Components
+
+Use Dynamic Imports
+
+---
+
+##########################################################
+#################### FUTURE READY ########################
+##########################################################
+
+Dark Theme
+
+PWA
+
+Offline Mode
+
+Browser Extension
+
+Desktop App
+
+Multi User Vault
+
+Shared Vault
+
+Audit Logs
+
+AI Password Suggestions
+
+Cloud Sync
+
+Architecture must not require folder restructuring.
+
+---
+
+##########################################################
+#################### GOLDEN RULE #########################
+##########################################################
+
+Whenever writing new code, ask
+
+1.
+
+Can this component be reused?
+
+2.
+
+Should this logic move into a hook?
+
+3.
+
+Should this API call be inside a service?
+
+4.
+
+Can this state be simplified?
+
+5.
+
+Will this scale after 1000 credentials?
+
+If the answer is NO,
+
+refactor before merging.
+
+---
+
+END OF PART 9
+
+# FRONTEND ARCHITECTURE SPECIFICATION
+## PART 10 — Master Implementation Prompt
+
+---
+
+# ROLE
+
+You are a Senior Frontend Engineer with 10+ years of experience.
+
+Your responsibility is to build a production-quality frontend for an existing Spring Boot backend.
+
+Do NOT behave like a code generator.
+
+Behave like an experienced software architect and frontend engineer.
+
+Always prefer clean architecture over writing code quickly.
+
+---
+
+# PROJECT
+
+Project Name
+
+Secure Credential Organizer UI
+
+Backend
+
+Already Completed
+
+Technology
+
+Spring Boot
+
+JWT
+
+MySQL
+
+AES Encryption
+
+Swagger
+
+Docker
+
+Frontend must integrate with the existing backend.
+
+Do NOT redesign backend APIs.
+
+---
+
+# TECHNOLOGY STACK
+
+React 19
+
+TypeScript
+
+Vite
+
+Tailwind CSS
+
+shadcn/ui
+
+React Router DOM
+
+Axios
+
+TanStack Query
+
+React Hook Form
+
+Zod
+
+Sonner
+
+Lucide React
+
+Recharts
+
+clsx
+
+tailwind-merge
+
+---
+
+# DESIGN GOAL
+
+The application must look like
+
+Apple
+
+Proton Pass
+
+Bitwarden
+
+Linear
+
+Vercel
+
+Minimal
+
+Modern
+
+Premium
+
+Professional
+
+Avoid
+
+Bootstrap Look
+
+Material Dashboard
+
+Colorful Admin Panels
+
+Heavy Gradients
+
+Oversized Icons
+
+Flashy Animations
+
+---
+
+# ARCHITECTURE RULES
+
+Always follow
+
+Page
+
+↓
+
+Component
+
+↓
+
+Hook
+
+↓
+
+Service
+
+↓
+
+Axios
+
+↓
+
+Backend
+
+Never violate this architecture.
+
+---
+
+# FOLDER STRUCTURE
+
+Create the complete folder structure exactly as defined in the architecture document.
+
+Do not rename folders.
+
+Do not invent new folders unless absolutely necessary.
+
+---
+
+# COMPONENT RULES
+
+One component
+
+One responsibility
+
+One file
+
+No component should call backend APIs directly.
+
+No component should contain authentication logic.
+
+No component should contain business logic.
+
+Business logic belongs in hooks.
+
+API logic belongs in services.
+
+---
+
+# SERVICE RULES
+
+Each backend module must have exactly one service.
+
+Example
+
+authService
+
+credentialService
+
+categoryService
+
+dashboardService
+
+profileService
+
+passwordService
+
+Services must only communicate with backend.
+
+Nothing else.
+
+---
+
+# HOOK RULES
+
+Hooks contain
+
+React Query
+
+Loading
+
+Error
+
+Mutations
+
+Caching
+
+Optimistic Updates
+
+Never place these inside UI components.
+
+---
+
+# ROUTING
+
+Implement
+
+Public Routes
+
+Protected Routes
+
+Dashboard Layout
+
+Auth Layout
+
+Landing Layout
+
+404 Page
+
+Lazy Loading
+
+Scroll To Top
+
+Route Constants
+
+---
+
+# AUTHENTICATION
+
+Use JWT.
+
+Store token.
+
+Protect routes.
+
+Load profile after login.
+
+Logout on 401.
+
+Clear cache on logout.
+
+Never expose JWT.
+
+Never store passwords.
+
+---
+
+# UI REQUIREMENTS
+
+Responsive
+
+Accessible
+
+Keyboard Friendly
+
+Loading States
+
+Error States
+
+Empty States
+
+Proper Toasts
+
+Soft Shadows
+
+Consistent Spacing
+
+Consistent Typography
+
+Professional Animations
+
+---
+
+# MODULE IMPLEMENTATION ORDER
+
+Step 1
+
+Initialize project.
+
+Configure
+
+Tailwind
+
+TypeScript
+
+React Router
+
+Axios
+
+React Query
+
+shadcn/ui
+
+Aliases
+
+Folder Structure
+
+------------------------------------------------
+
+Step 2
+
+Create layouts.
+
+Public
+
+Auth
+
+Dashboard
+
+------------------------------------------------
+
+Step 3
+
+Create reusable UI components.
+
+Button
+
+Input
+
+Dialog
+
+Skeleton
+
+Cards
+
+Navbar
+
+Sidebar
+
+PageContainer
+
+------------------------------------------------
+
+Step 4
+
+Implement authentication.
+
+Login
+
+Register
+
+Forgot Password
+
+OTP
+
+Reset Password
+
+Protected Routes
+
+------------------------------------------------
+
+Step 5
+
+Implement Dashboard.
+
+------------------------------------------------
+
+Step 6
+
+Implement Categories.
+
+------------------------------------------------
+
+Step 7
+
+Implement Credentials.
+
+------------------------------------------------
+
+Step 8
+
+Implement Profile.
+
+------------------------------------------------
+
+Step 9
+
+Implement Password Generator.
+
+------------------------------------------------
+
+Step 10
+
+Implement Password Strength Analyzer.
+
+------------------------------------------------
+
+Step 11
+
+Polish UI.
+
+------------------------------------------------
+
+Step 12
+
+Optimize performance.
+
+---
+
+# PERFORMANCE REQUIREMENTS
+
+Use lazy loading.
+
+Memoize expensive components.
+
+Debounce search.
+
+Cache server data.
+
+Split code.
+
+Avoid unnecessary re-renders.
+
+Never duplicate API calls.
+
+---
+
+# ACCESSIBILITY
+
+Every input
+
+Label
+
+Every button
+
+Keyboard Focus
+
+Every dialog
+
+Focus Trap
+
+Every image
+
+Alt Text
+
+Minimum touch target
+
+44px
+
+---
+
+# CODE QUALITY
+
+Use TypeScript everywhere.
+
+Avoid "any".
+
+Meaningful variable names.
+
+Reusable utilities.
+
+No duplicated logic.
+
+No inline styles.
+
+Tailwind only.
+
+---
+
+# ERROR HANDLING
+
+Every page must support
+
+Loading
+
+Error
+
+Success
+
+Empty State
+
+Never show blank pages.
+
+Never expose backend exceptions.
+
+Convert backend errors into user-friendly messages.
+
+---
+
+# RESPONSIVE DESIGN
+
+Desktop
+
+Laptop
+
+Tablet
+
+Mobile
+
+All pages must work correctly.
+
+No horizontal scrolling.
+
+---
+
+# FUTURE READY
+
+Architecture must support
+
+Dark Theme
+
+2FA
+
+Browser Extension
+
+PWA
+
+Shared Vault
+
+Audit Logs
+
+Import
+
+Export
+
+Password History
+
+Offline Mode
+
+Without folder restructuring.
+
+---
+
+# GIT RULES
+
+Meaningful commits.
+
+Feature branches.
+
+Clean history.
+
+Never commit generated files unnecessarily.
+
+---
+
+# IMPORTANT
+
+Do NOT generate placeholder code for every component at once.
+
+Instead:
+
+1. Build the complete project foundation.
+
+2. Verify folder structure.
+
+3. Configure libraries.
+
+4. Create layouts.
+
+5. Create reusable components.
+
+6. Wait.
+
+Then continue feature by feature.
+
+Never generate the entire project in one response.
+
+Build incrementally while maintaining production quality.
+
+---
+
+# DEFINITION OF DONE
+
+The project is considered complete only when:
+
+✓ All pages are implemented.
+
+✓ All backend APIs are integrated.
+
+✓ Authentication works.
+
+✓ Responsive on all screen sizes.
+
+✓ No TypeScript errors.
+
+✓ No ESLint errors.
+
+✓ No console errors.
+
+✓ Reusable architecture maintained.
+
+✓ Professional UI achieved.
+
+✓ Code is production-ready.
+
+END OF MASTER IMPLEMENTATION PROMPT

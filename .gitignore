@@ -1,0 +1,38 @@
+# =========================
+# IDE
+# =========================
+.idea/
+.vscode/
+
+# =========================
+# Backend
+# =========================
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/.apt_generated
+backend/.classpath
+backend/.factorypath
+backend/.project
+backend/.settings/
+backend/.springBeans
+backend/.sts4-cache
+backend/output.txt
+backend/.env
+
+# =========================
+# Frontend
+# =========================
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log

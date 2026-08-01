@@ -1,0 +1,40 @@
+services:
+
+  mysql:
+    image: mysql:8.4
+    container_name: secure-mysql
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: secure_credential_organizer
+
+    ports:
+      - "3307:3306"
+
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: secure-credential-organizer
+
+    depends_on:
+      - mysql
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+
+    env_file:
+      - .env
+
+    restart: always
+
+volumes:
+  mysql-data:

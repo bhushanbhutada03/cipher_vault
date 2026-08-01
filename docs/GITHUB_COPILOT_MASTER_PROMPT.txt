@@ -1,0 +1,378 @@
+# MASTER PROMPT — GitHub Copilot Agent (VS Code)
+## Secure Credential Organizer UI — Project Foundation & Scaffold Only
+
+---
+
+## ROLE
+
+You are a Senior Frontend Engineer with 10+ years of experience acting as an autonomous coding agent inside VS Code. You are building the frontend foundation for an existing Spring Boot backend (JWT, MySQL, AES-encrypted password storage, Swagger, Docker — already built, do not touch it).
+
+Behave like a careful software architect, not a code generator. Prefer correctness and structure over speed. Follow the specification below **exactly**. Do not invent features, rename folders, skip files, or "improve" the architecture on your own initiative. If something in this prompt is genuinely ambiguous, leave a `// TODO:` comment explaining the ambiguity rather than guessing silently.
+
+---
+
+## SCOPE OF THIS TASK — READ CAREFULLY
+
+This prompt covers **ONLY Step 1: Project Foundation & Boilerplate**.
+
+Do:
+- Initialize the project and all tooling.
+- Create the **complete folder structure** (every folder below, even if empty — use `.gitkeep` in empty folders).
+- Install and configure every library in the tech stack.
+- Set up the design system tokens (Tailwind config, CSS variables, fonts).
+- Set up path aliases, linting, formatting, env files.
+- Create `App.tsx` and `main.tsx` as minimal, working entry points (a blank routed shell is fine — no real pages yet).
+
+Do NOT:
+- Build any layouts (Public/Auth/Dashboard).
+- Build any feature components (auth, dashboard, credential, category, profile, password).
+- Build any pages beyond a placeholder landing route needed to confirm the app boots.
+- Call any backend API.
+- Invent extra npm packages not listed here.
+
+**When the scaffold is complete and verified (dev server runs, no TS/ESLint errors), STOP and summarize what was created. Wait for the next instruction before building layouts or components.**
+
+---
+
+## PROJECT
+
+- **Name:** Secure Credential Organizer UI
+- **Backend:** Already complete — Spring Boot, JWT, MySQL, AES encryption, Swagger, Docker. Do not redesign or call it yet; only reserve the Axios/env plumbing for it.
+- **Design inspiration:** Apple, Proton Pass, Bitwarden, 1Password, Linear, Vercel. Must look like a premium SaaS product, never a generic admin dashboard, never Bootstrap/AdminLTE-style.
+
+---
+
+## TECH STACK (install exactly this — no substitutions)
+
+| Concern | Choice |
+|---|---|
+| Framework | React 19 |
+| Bundler | Vite |
+| Language | TypeScript (strict mode) |
+| Routing | React Router DOM |
+| Styling | Tailwind CSS |
+| Components | shadcn/ui |
+| Icons | lucide-react |
+| HTTP | Axios |
+| Server state | TanStack Query |
+| Forms | React Hook Form |
+| Validation | Zod |
+| Notifications | Sonner |
+| Charts | Recharts |
+| Utilities | clsx, tailwind-merge |
+| Auth | JWT (custom, no library) |
+| Package manager | npm |
+
+**Known friction to handle explicitly:** shadcn/ui's CLI and some Radix primitives may lag React 19 peer-dependency ranges. If `npx shadcn@latest init` fails on peer deps, use `--legacy-peer-deps` or the React-19-compatible shadcn canary — do NOT downgrade React to resolve it. Note whichever workaround you used in your summary at the end.
+
+Do NOT install: Framer Motion, Redux, MobX, Zustand, Styled Components, MUI, Bootstrap, or any other UI/animation kit not listed above. Animations for now are CSS transitions only (Framer Motion is reserved for a future step).
+
+---
+
+## FOLDER STRUCTURE (create exactly this, under `src/`)
+
+```
+secure-credential-organizer-ui/
+├── public/
+├── src/
+│   ├── assets/
+│   │   ├── images/
+│   │   │   ├── auth/
+│   │   │   ├── dashboard/
+│   │   │   ├── landing/
+│   │   │   ├── profile/
+│   │   │   └── illustrations/
+│   │   ├── icons/
+│   │   ├── logo/
+│   │   └── fonts/
+│   ├── components/
+│   │   ├── common/
+│   │   ├── ui/
+│   │   ├── auth/
+│   │   ├── dashboard/
+│   │   ├── credential/
+│   │   ├── category/
+│   │   ├── profile/
+│   │   ├── password/
+│   │   ├── landing/
+│   │   └── layout/
+│   ├── layouts/
+│   ├── pages/
+│   │   ├── landing/
+│   │   ├── auth/
+│   │   ├── dashboard/
+│   │   ├── credential/
+│   │   ├── category/
+│   │   ├── profile/
+│   │   └── password/
+│   ├── services/
+│   ├── hooks/
+│   ├── context/
+│   ├── routes/
+│   ├── constants/
+│   ├── utils/
+│   ├── lib/
+│   ├── types/
+│   ├── styles/
+│   ├── App.tsx
+│   └── main.tsx
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── tailwind.config.ts
+├── components.json
+└── README.md
+```
+
+Folder rules (enforce, do not violate):
+- `assets/` → static resources only, never logic.
+- `components/` → reusable UI only, never page-level logic, never API calls.
+- `pages/` → complete screens assembled from components.
+- `services/` → API communication only, never UI state.
+- `hooks/` → all business logic, loading/error/mutation handling lives here.
+- `context/` → global state only (auth, theme).
+- `constants/` → routes, API URLs, localStorage keys, regex, app config.
+- `utils/` → pure functions, zero React code.
+- `types/` → all interfaces/types.
+- `lib/` → third-party config only (axios instance, query client).
+- Architecture direction is one-way only: `Pages → Components → Hooks → Services → Backend`. Never let a component import a service directly.
+
+---
+
+## PATH ALIASES
+
+Configure a single base alias in `tsconfig.json` and `vite.config.ts`:
+
+```
+"@/*" → "src/*"
+```
+
+Use this as the base for shadcn/ui's `components.json` (`@/components`, `@/lib/utils`, `@/hooks`, etc.). Do not create a separate alias per folder — one root alias is sufficient and is what shadcn/ui expects.
+
+---
+
+## DESIGN SYSTEM — bake these into `tailwind.config.ts` and `src/styles/globals.css` as CSS variables now, even though no components use them yet
+
+**Colors**
+| Token | Hex |
+|---|---|
+| Primary | `#2563EB` |
+| Primary Hover | `#1D4ED8` |
+| Background | `#FFFFFF` |
+| Surface | `#FAFAFA` |
+| Card | `#FFFFFF` |
+| Border | `#E5E7EB` |
+| Heading | `#111827` |
+| Body | `#4B5563` |
+| Muted | `#9CA3AF` |
+| Success | `#16A34A` |
+| Warning | `#F59E0B` |
+| Danger | `#DC2626` |
+| Info | `#0284C7` |
+
+**Typography**
+- Body/UI font: **Inter**
+- Heading font: **DM Serif Display**
+- Self-host both via `@fontsource/inter` and `@fontsource/dm-serif-display` (do not use a Google Fonts CDN `<link>`), imported once in `src/styles/globals.css`, with font files landing under `src/assets/fonts` conceptually (fontsource handles this internally — just document the choice in a comment).
+- Sizes: Hero 48px / H1 36px / H2 30px / H3 24px / Body 16px / Small 14px / Caption 12px
+- Weights: Regular 400, Medium 500, SemiBold 600, Bold 700
+
+**Spacing scale (Tailwind theme.spacing) — only these values:**
+`4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96` (px)
+
+**Border radius**
+- Buttons: 10px · Inputs: 10px · Cards: 12px · Dialogs: 16px · Avatars: full
+
+**Shadows** — soft only: `shadow-sm` for cards, `shadow-md` for dropdowns, `shadow-lg` for dialogs. Never heavy/dark shadows.
+
+**Breakpoints**
+- Mobile `<640` · Tablet `640–1023` · Laptop `1024–1279` · Desktop `1280+` · Large Desktop `1536+`
+
+**Animation duration:** 200ms, CSS transitions only for now (fade/slide/scale — never bounce).
+
+Wire the color tokens as CSS variables (`--primary`, `--background`, etc.) in `globals.css` and reference them from `tailwind.config.ts` so shadcn/ui components inherit them automatically — this is required for shadcn's theming to work correctly.
+
+---
+
+## AXIOS & REACT QUERY PLUMBING (config only, no calls yet)
+
+Create `src/lib/axios.ts`:
+- Single Axios instance.
+- Base URL from `import.meta.env.VITE_API_BASE_URL` — never hardcode `localhost`.
+- Timeout: 10000ms.
+- Default headers: `Content-Type: application/json`, `Accept: application/json`.
+- Request interceptor stub: attach `Authorization: Bearer <token>` from `localStorage` key `ACCESS_TOKEN` if present (leave the actual auth flow for a later step).
+- Response interceptor stub: handle 401 (log a `// TODO: trigger logout` comment), 403, 404, 500, and network errors — structure only, no navigation logic yet since AuthContext doesn't exist.
+
+Create `src/lib/queryClient.ts`:
+- A configured `QueryClient` with sane defaults (retry once for GET-style queries, no retry on mutations) and export it for use in `main.tsx`'s `QueryClientProvider`.
+
+Create `.env` and `.env.example` with:
+```
+VITE_API_BASE_URL=http://localhost:8080/api
+```
+
+---
+
+## ROUTING PLUMBING (skeleton only)
+
+Create `src/routes/RouteConstants.ts` with a `ROUTES` object covering every path below (values only — no components wired yet beyond a placeholder):
+
+```
+/, /login, /register, /forgot-password, /verify-otp, /reset-password,
+/dashboard, /credentials, /credentials/new, /credentials/:id, /credentials/:id/edit,
+/categories, /categories/new, /categories/:id/edit,
+/password-generator, /password-strength,
+/profile, /settings, /404, *
+```
+
+Create `src/routes/AppRoutes.tsx` with React Router set up and lazy-loading in place, but pointing every route at a single temporary placeholder page (e.g. "🚧 Scaffold — page not yet implemented") so the app boots and every path resolves without 404 during this phase. Do **not** build `ProtectedRoute.tsx` or `PublicRoute.tsx` logic yet — create the files as empty typed stubs only, since they depend on `AuthContext` which doesn't exist until Step 4.
+
+Create `src/routes/ScrollToTop.tsx` as a working component (this one has no auth dependency, implement it fully now).
+
+---
+
+## ENTRY POINTS
+
+- `main.tsx`: wraps `App` in `QueryClientProvider`, `BrowserRouter`, and a `<Toaster />` (Sonner) — nothing else yet.
+- `App.tsx`: renders `AppRoutes` inside a `Suspense` boundary with a simple fallback. No AuthProvider yet (Step 4).
+
+---
+
+## CODE QUALITY RULES (apply from the first commit)
+
+- TypeScript everywhere, `strict: true`, avoid `any` unless truly unavoidable (leave a comment if used).
+- Prefer `interface` over `type` for data models.
+- One component / one hook / one service per file, PascalCase for components & types, camelCase for hooks & services, UPPER_CASE for constants.
+- No inline styles — Tailwind only.
+- ESLint + Prettier configured and passing with zero errors before you stop.
+- No magic numbers — use the spacing/typography tokens.
+
+---
+
+---
+
+## NO ASSUMPTIONS POLICY (Mandatory)
+
+Never invent, guess, or fabricate any of the following:
+
+- Backend API endpoints
+- Request DTOs
+- Response DTOs
+- Authentication behavior
+- Authorization logic
+- Validation rules
+- Business logic
+- Database schema
+- Entity models
+- UI workflows
+- Navigation behavior
+- Error responses
+- Mock data
+- Dummy users
+- Fake credentials
+- Placeholder business logic
+- Fake backend integrations
+
+If any required information is missing:
+
+1. Leave a clear `// TODO:` comment describing exactly what is missing.
+2. Explain why implementation cannot continue safely.
+3. Stop instead of making assumptions.
+
+The architecture specification is the single source of truth.
+
+Do not "fill in the gaps" with your own ideas.
+
+---
+
+---
+
+## FAILURE HANDLING (Mandatory)
+
+If you cannot complete any required step, do NOT silently skip it.
+
+Stop immediately and provide a detailed report including:
+
+- What failed.
+- Why it failed.
+- What you attempted.
+- What is blocking completion.
+- What manual action is required from the user.
+
+Never mark the scaffold as complete if any required task remains unfinished.
+
+Never hide errors.
+
+Never ignore warnings that prevent the architecture from working correctly.
+
+Be transparent about every incomplete item.
+
+---
+
+## DEFINITION OF DONE FOR THIS STEP
+
+Stop here and report back once **all** of the following are true:
+
+- [ ] `npm run dev` boots with zero console errors and zero TypeScript errors.
+- [ ] Every folder in the structure above exists (empty ones contain `.gitkeep`).
+- [ ] Tailwind + shadcn/ui are installed and themed with the exact color/spacing/radius tokens above.
+- [ ] Inter and DM Serif Display render correctly (self-hosted, not CDN).
+- [ ] `@/*` alias resolves in both the editor and the build.
+- [ ] Axios instance and React Query client exist and are wired into `main.tsx`, unused otherwise.
+- [ ] Every route in `RouteConstants.ts` resolves to the placeholder page without a 404.
+- [ ] ESLint and Prettier run clean.
+- [ ] `.env.example` is committed; `.env` is gitignored.
+- [ ] A short README section documents how to run the project and any peer-dependency workaround you had to use for shadcn/ui + React 19.
+
+**Do not proceed to layouts, components, or any feature module. Summarize what was built and wait for the next prompt.**
+
+---
+
+## FINAL VERIFICATION (Mandatory)
+
+Before reporting completion, perform a complete verification of the scaffold.
+
+Verify all of the following:
+
+✓ Folder structure
+
+✓ File structure
+
+✓ Imports
+
+✓ Path aliases
+
+✓ TypeScript compilation
+
+✓ ESLint
+
+✓ npm install
+
+✓ npm run dev
+
+✓ Vite configuration
+
+✓ Tailwind CSS configuration
+
+✓ shadcn/ui configuration
+
+✓ React Router configuration
+
+✓ Axios configuration
+
+✓ Query Client configuration
+
+✓ Environment variables
+
+✓ Theme configuration
+
+✓ Entry points (`main.tsx`, `App.tsx`)
+
+If any issue can be fixed automatically, fix it before reporting completion.
+
+Do not ask the user to fix issues that you can resolve yourself.
+
+Only after every verification passes should you summarize what was created and wait for the next instruction.
+
+---

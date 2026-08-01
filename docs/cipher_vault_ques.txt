@@ -1,0 +1,158 @@
+==========================
+1. Why separate verification_tokens table?
+==========================
+
+Answer:
+• Verification token is temporary.
+• User data is permanent.
+• Keeps database normalized.
+• Easy to expire/delete token after verification.
+
+
+==========================
+2. Why encrypt only passwords and not website name?
+==========================
+
+Answer:
+• Sensitive data (Password, Username, Notes) → Encrypted.
+• Website Name, URL, Category → Plain Text.
+• Plain fields allow searching, filtering and sorting.
+
+
+==========================
+3. Why BCrypt for Login Password and AES for Vault Data?
+==========================
+
+Answer:
+• BCrypt → One-way hashing (cannot be decrypted), used for authentication.
+• AES → Two-way encryption, used because passwords must be decrypted when user views them.
+
+
+==========================
+4. If AES is public, why can't hackers decrypt the data?
+==========================
+
+Answer:
+• Security depends on the secret encryption key, not the AES algorithm.
+• Everyone knows AES.
+• Without the key, decryption is practically impossible.
+
+
+==========================
+5. Explain your encryption architecture.
+==========================
+
+Answer:
+
+Master Password
+      ↓
+PBKDF2
+      ↓
+Key Encryption Key (KEK)
+      ↓
+Decrypt Vault Key
+      ↓
+Vault Key Encrypts/Decrypts Sensitive Data
+
+• Master Password never encrypts data directly.
+
+
+==========================
+6. Why can't even the developer see user passwords?
+==========================
+
+Answer:
+• Only encrypted data is stored.
+• Developer doesn't know the Master Password or Vault Key.
+• Project follows Zero-Knowledge Architecture.
+
+
+==========================
+7. What if user forgets the Master Password?
+==========================
+
+Answer:
+• Recovery Key available → Reset Master Password.
+• Recovery Key lost → Vault cannot be recovered.
+• Even developer/admin cannot recover it.
+
+
+==========================
+8. Why use Foreign Keys and ON DELETE CASCADE?
+==========================
+
+Answer:
+• Maintains referential integrity.
+• Prevents orphan records.
+• Automatically deletes related records when parent is deleted.
+
+
+==========================
+9. Why MySQL instead of MongoDB?
+==========================
+
+Answer:
+• Structured relational data.
+• Supports Foreign Keys and Transactions.
+• Better for authentication and secure credential management.
+
+
+==========================
+10. Why multiple tables instead of one?
+==========================
+
+Answer:
+• Follows Database Normalization.
+• Avoids duplicate/NULL data.
+• Easy to maintain and scale.
+• Each table has a single responsibility.
+
+
+==========================
+BONUS (Very Common)
+==========================
+
+Q. Why PBKDF2?
+Ans:
+• Derives a strong encryption key from the Master Password.
+• Makes brute-force attacks much harder.
+
+Q. Why Recovery Key?
+Ans:
+• Allows secure Master Password reset.
+• Developer never knows the user's Master Password.
+
+Q. Why Password History?
+Ans:
+• Stores previous encrypted passwords.
+• Helps prevent password reuse.
+
+Q. Why Email Verification?
+Ans:
+• Confirms email ownership.
+• Prevents fake accounts.
+• Required for password recovery.
+
+Q. Why UUID for Verification Token?
+Ans:
+• Random and globally unique.
+• Difficult to guess.
+• Ideal for verification links.
+
+Q. Category table me user_id kyu hai?
+
+ANS:
+"Categories are user-specific. Different users can have categories with the same name, so I modeled it as a one-to-many relationship between Users and Categories and enforced uniqueness only within a user's scope using a composite unique constraint (user_id, category_name)."
+
+
+Why did you use POST for Reveal Password instead of GET?
+
+Tum answer de sakte ho:
+
+"Reveal Password requires the client to send the user's master password for verification before decrypting the stored credential. Since GET requests should not carry sensitive data in the URL or rely on request bodies, I used POST so the master password is sent securely in the request body over HTTPS. The endpoint performs a secure operation rather than simply retrieving a stored resource."
+
+"How did you test your backend?"
+
+Tum confidently bol sakte ho:
+
+"I tested every REST endpoint using Swagger UI. I verified authentication, JWT authorization, CRUD operations, AES encryption/decryption, password history, search, favorites, validation, and Docker deployment. During testing I also debugged and fixed production-like issues including Docker networking, empty database initialization, port conflicts, OpenAPI JWT configuration, and Hibernate LazyInitializationException."
