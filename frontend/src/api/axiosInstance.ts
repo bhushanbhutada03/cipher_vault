@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { API_BASE_URL } from "@/constants/env";
 import { tokenService } from "@/services/tokenService";
+import { vaultTokenService } from "@/services/vaultTokenService";
 import { authEvents } from "@/services/authEvents";
 import type { ApiError } from "@/types/api";
 
@@ -26,6 +27,10 @@ axiosInstance.interceptors.request.use((config) => {
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    const vaultToken = vaultTokenService.getToken();
+    if (vaultToken) {
+      config.headers["X-Vault-Token"] = vaultToken;
+    }
   }
   return config;
 });
@@ -46,10 +51,17 @@ axiosInstance.interceptors.response.use(
       error.config?.url?.startsWith(path)
     );
     const responseData = error.response?.data;
+    const message = responseData?.message || "";
 
     if (status === 401 && !isPublic) {
       tokenService.clearToken();
       authEvents.emit("session-expired");
+    }
+
+    if (message.includes("VaultToken")) {
+      vaultTokenService.clearToken();
+      // Emitting an event or reloading could be done here, 
+      // but clearing it will force the VaultProtectedRoute to prompt again.
     }
 
     const apiError: ApiError = {

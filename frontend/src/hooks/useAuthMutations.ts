@@ -46,3 +46,15 @@ export function useResetPasswordMutation() {
     mutationFn: (payload) => authApi.resetPassword(payload),
   });
 }
+
+export function useVerifyRegistrationEmailMutation() {
+  return useMutation<{ message: string }, ApiError, VerifyOtpRequest>({
+    mutationFn: (payload) => authApi.verifyRegistrationEmail(payload),
+  });
+}
+
+export function useResendRegistrationOtpMutation() {
+  return useMutation<{ message: string }, ApiError, { email: string }>({
+    mutationFn: (payload) => authApi.resendRegistrationOtp(payload),
+  });
+}

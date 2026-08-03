@@ -168,7 +168,7 @@ export default function ForgotPassword() {
           setFormError(null);
           verifyOtpForm.reset();
           setResendUnlockedAt(Date.now() + 60000);
-          toast.success("A new verification code has been sent.");
+          toast.success("Code sent", { description: "A new verification code has been sent." });
         },
         onError: handleApiError,
       }
@@ -216,10 +216,10 @@ export default function ForgotPassword() {
       title="Reset your password"
       subtitle={
         step === "REQUEST_OTP"
-          ? "Enter your email address to receive a verification code."
+          ? "Enter your email to receive a verification code."
           : step === "VERIFY_OTP"
           ? `Enter the 6-digit code sent to ${email}.`
-          : "Create a new login password for your vault."
+          : "Create a new login password."
       }
     >
       {lockoutSeconds > 0 ? (
@@ -242,8 +242,8 @@ export default function ForgotPassword() {
       ) : null}
 
       {step === "REQUEST_OTP" && (
-        <form onSubmit={requestOtpForm.handleSubmit(onRequestOtp)} noValidate className="space-y-5">
-          <div>
+        <form onSubmit={requestOtpForm.handleSubmit(onRequestOtp)} noValidate className="space-y-6 mt-6">
+          <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -251,7 +251,7 @@ export default function ForgotPassword() {
               autoComplete="email"
               placeholder="you@company.com"
               hasError={Boolean(requestOtpForm.formState.errors.email) || lockoutSeconds > 0}
-              className="mt-1.5"
+              className="h-12"
               disabled={requestOtpMutation.isPending || lockoutSeconds > 0}
               {...requestOtpForm.register("email")}
             />
@@ -261,7 +261,7 @@ export default function ForgotPassword() {
           <Button
             type="submit"
             size="lg"
-            className="w-full"
+            className="w-full h-12 text-base mt-2"
             isLoading={requestOtpMutation.isPending}
             disabled={lockoutSeconds > 0}
           >
@@ -271,8 +271,8 @@ export default function ForgotPassword() {
       )}
 
       {step === "VERIFY_OTP" && (
-        <form onSubmit={verifyOtpForm.handleSubmit(onVerifyOtp)} noValidate className="space-y-5">
-          <div>
+        <form onSubmit={verifyOtpForm.handleSubmit(onVerifyOtp)} noValidate className="space-y-6 mt-6">
+          <div className="space-y-2">
             <Label htmlFor="otp">Verification Code</Label>
             <Input
               id="otp"
@@ -281,7 +281,7 @@ export default function ForgotPassword() {
               placeholder="123456"
               maxLength={6}
               hasError={Boolean(verifyOtpForm.formState.errors.otp) || lockoutSeconds > 0}
-              className="mt-1.5 text-center tracking-widest text-lg font-mono"
+              className="h-12 text-center tracking-widest text-lg font-mono"
               disabled={verifyOtpMutation.isPending || lockoutSeconds > 0}
               {...verifyOtpForm.register("otp")}
             />
@@ -291,19 +291,19 @@ export default function ForgotPassword() {
           <Button
             type="submit"
             size="lg"
-            className="w-full"
+            className="w-full h-12 text-base mt-2"
             isLoading={verifyOtpMutation.isPending}
             disabled={lockoutSeconds > 0}
           >
             {lockoutSeconds > 0 ? `Try again in ${lockoutSeconds}s` : "Verify Code"}
           </Button>
 
-          <div className="flex flex-col space-y-3 mt-4 items-center">
-            <div className="text-sm text-muted-foreground flex items-center justify-center space-x-1">
+          <div className="flex flex-col space-y-4 mt-6 items-center">
+            <div className="text-sm text-muted-foreground flex items-center justify-center space-x-2">
               <span>Didn't receive the code?</span>
               <button
                 type="button"
-                className="font-medium text-brass hover:underline disabled:opacity-50 disabled:hover:no-underline"
+                className="ui-brand-link font-medium hover:underline disabled:opacity-50 disabled:hover:no-underline"
                 onClick={onResendOtp}
                 disabled={resendCountdown > 0 || lockoutSeconds > 0 || resendOtpMutation.isPending}
               >
@@ -316,7 +316,7 @@ export default function ForgotPassword() {
             </div>
             <button
               type="button"
-              className="text-sm font-medium text-brass hover:underline disabled:opacity-50"
+              className="ui-brand-link text-sm font-medium hover:underline disabled:opacity-50"
               onClick={() => {
                 setStep("REQUEST_OTP");
                 setFormError(null);
@@ -331,29 +331,29 @@ export default function ForgotPassword() {
       )}
 
       {step === "RESET_PASSWORD" && (
-        <form onSubmit={resetPasswordForm.handleSubmit(onResetPassword)} noValidate className="space-y-5">
-          <div>
+        <form onSubmit={resetPasswordForm.handleSubmit(onResetPassword)} noValidate className="space-y-6 mt-6">
+          <div className="space-y-2">
             <Label htmlFor="newPassword">New Password</Label>
             <PasswordInput
               id="newPassword"
               autoComplete="new-password"
               placeholder="••••••••"
               hasError={Boolean(resetPasswordForm.formState.errors.newPassword) || lockoutSeconds > 0}
-              className="mt-1.5"
+              className="h-12"
               disabled={resetPasswordMutation.isPending || lockoutSeconds > 0}
               {...resetPasswordForm.register("newPassword")}
             />
             <FieldError message={resetPasswordForm.formState.errors.newPassword?.message} />
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm Password</Label>
             <PasswordInput
               id="confirmPassword"
               autoComplete="new-password"
               placeholder="••••••••"
               hasError={Boolean(resetPasswordForm.formState.errors.confirmPassword) || lockoutSeconds > 0}
-              className="mt-1.5"
+              className="h-12"
               disabled={resetPasswordMutation.isPending || lockoutSeconds > 0}
               {...resetPasswordForm.register("confirmPassword")}
             />
@@ -363,7 +363,7 @@ export default function ForgotPassword() {
           <Button
             type="submit"
             size="lg"
-            className="w-full"
+            className="w-full h-12 text-base mt-2"
             isLoading={resetPasswordMutation.isPending}
             disabled={lockoutSeconds > 0}
           >
@@ -372,14 +372,11 @@ export default function ForgotPassword() {
         </form>
       )}
 
-      {step === "REQUEST_OTP" && (
-        <p className="mt-8 text-center text-sm text-muted-foreground">
-          Remembered your password?{" "}
-          <Link to="/login" className="font-medium text-brass hover:underline">
-            Sign in
-          </Link>
-        </p>
-      )}
+      <p className="mt-8 text-center text-sm text-muted-foreground">
+        <Link to="/login" className="ui-brand-link font-medium hover:underline">
+          Back to sign in
+        </Link>
+      </p>
     </AuthLayout>
   );
 }

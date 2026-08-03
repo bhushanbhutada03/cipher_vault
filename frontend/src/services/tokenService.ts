@@ -11,6 +11,16 @@ export const tokenService = {
     localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
   },
   hasToken(): boolean {
-    return Boolean(this.getToken());
+    const token = this.getToken();
+    if (!token) return false;
+    try {
+      const payloadBase64 = token.split('.')[1];
+      if (!payloadBase64) return false;
+      const payload = JSON.parse(atob(payloadBase64));
+      if (!payload.exp) return true;
+      return payload.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
   },
 };

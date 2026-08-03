@@ -11,4 +11,7 @@ public interface AuthService {
 
     LoginResponse login(LoginRequest request);
 
+    void verifyEmail(com.bhushan.securecredentialorganizer.dto.request.VerifyOtpRequest request);
+
+    void resendVerificationOtp(String email);
 }

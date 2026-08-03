@@ -8,6 +8,7 @@ export interface RegisterRequest {
 export interface RegisterResponse {
   message: string;
   success: boolean;
+  recoveryKey?: string;
 }
 
 export interface LoginRequest {

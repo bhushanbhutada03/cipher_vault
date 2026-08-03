@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { tokenService } from "@/services/tokenService";
+import { vaultTokenService } from "@/services/vaultTokenService";
 import { authEvents } from "@/services/authEvents";
 import { AuthContext } from "@/context/auth-context-value";
 
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     return authEvents.on("session-expired", () => {
+      vaultTokenService.clearToken();
       setIsAuthenticated(false);
       setSessionExpired(true);
     });
@@ -34,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     tokenService.clearToken();
+    vaultTokenService.clearToken();
     setIsAuthenticated(false);
   }, []);
 

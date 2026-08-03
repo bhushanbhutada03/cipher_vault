@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface WebsiteCredentialService {
 
-    void create(WebsiteCredentialRequest request);
+    void create(WebsiteCredentialRequest request, String vaultToken);
 
     List<CredentialListResponse> getAll();
 
@@ -19,12 +19,14 @@ public interface WebsiteCredentialService {
 
     CredentialDetailResponse reveal(
             Long id,
-            RevealCredentialRequest request
+            RevealCredentialRequest request,
+            String vaultToken
     );
 
     CredentialDetailResponse update(
             Long id,
-            UpdateCredentialRequest request
+            UpdateCredentialRequest request,
+            String vaultToken
     );
 
     void delete(

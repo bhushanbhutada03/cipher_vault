@@ -78,7 +78,7 @@ export default function Credentials() {
                   Credentials
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                  Manage and access all your saved accounts securely.
+                  Browse and manage saved credentials.
                 </p>
               </div>
             </div>
@@ -97,7 +97,7 @@ export default function Credentials() {
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search credentials..."
-                className="pl-9"
+                className="pl-9 h-12"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
               />
@@ -116,7 +116,7 @@ export default function Credentials() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="flex h-11 w-full rounded-md border border-border-strong bg-surface px-3.5 py-2 text-sm text-foreground transition-colors duration-150 focus-visible:border-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/30"
+                className="flex h-12 w-full rounded-md border border-border-strong bg-surface px-3.5 py-2 text-sm text-foreground transition-colors duration-150 focus-visible:border-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/30"
                 aria-label="Filter by category"
               >
                 <option value="All">All Categories</option>
@@ -159,13 +159,13 @@ export default function Credentials() {
                 </div>
                 <h3 className="font-display text-2xl font-semibold text-foreground">
                   {isSearching || selectedCategory !== "All"
-                    ? "No results found"
-                    : "No credentials yet"}
+                    ? "No results"
+                    : "No credentials"}
                 </h3>
                 <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground">
                   {isSearching || selectedCategory !== "All"
-                    ? "Try adjusting your search or category filter to find what you're looking for."
-                    : "Save your first credential to start organizing your digital life securely."}
+                    ? "Adjust your search or filter."
+                    : "Add your first credential to get started."}
                 </p>
                 {(!isSearching && selectedCategory === "All") && (
                   <Button type="button" className="mt-6 min-w-36" asChild>

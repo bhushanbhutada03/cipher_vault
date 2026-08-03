@@ -15,9 +15,10 @@ public class ExportController {
     private final ExportService exportService;
 
     @GetMapping("/csv")
-    public ResponseEntity<byte[]> exportCsv() {
+    public ResponseEntity<byte[]> exportCsv(
+            @RequestHeader("X-Vault-Token") String vaultToken) {
 
-        byte[] csv = exportService.exportCsv();
+        byte[] csv = exportService.exportCsv(vaultToken);
 
         return ResponseEntity.ok()
                 .header(

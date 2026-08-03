@@ -13,18 +13,18 @@ import com.bhushan.securecredentialorganizer.repository.UserRepository;
 import com.bhushan.securecredentialorganizer.service.BruteForceProtectionService;
 import com.bhushan.securecredentialorganizer.service.EmailService;
 import com.bhushan.securecredentialorganizer.service.ForgotPasswordService;
+import com.bhushan.securecredentialorganizer.service.OtpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.security.SecureRandom;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
     private final UserRepository userRepository;
@@ -32,8 +32,10 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final BruteForceProtectionService attemptService;
+    private final OtpService otpService;
 
     @Override
+    @Transactional
     public void sendOtp(ForgotPasswordRequest request) {
 
         String email = request.getEmail();
@@ -54,12 +56,12 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         passwordResetOtpRepository.deleteByEmail(user.getEmail());
 
-        String otp = generateOtp();
+        String otp = otpService.generateOtp();
 
         PasswordResetOtp passwordResetOtp = PasswordResetOtp.builder()
                 .email(user.getEmail())
                 .otp(otp)
-                .expiryTime(LocalDateTime.now().plusMinutes(10))
+                .expiryTime(otpService.getExpiryTime())
                 .build();
 
         passwordResetOtpRepository.save(passwordResetOtp);
@@ -68,6 +70,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     @Override
+    @Transactional
     public void verifyOtp(VerifyOtpRequest request) {
 
         String email = request.getEmail();
@@ -95,6 +98,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     @Override
+    @Transactional
     public void resetPassword(ResetPasswordRequest request) {
         PasswordResetOtp passwordResetOtp =
                 passwordResetOtpRepository
@@ -124,14 +128,5 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         userRepository.save(user);
 
         passwordResetOtpRepository.delete(passwordResetOtp);
-    }
-
-    private String generateOtp() {
-
-        SecureRandom random = new SecureRandom();
-
-        int otp = 100000 + random.nextInt(900000);
-
-        return String.valueOf(otp);
     }
 }

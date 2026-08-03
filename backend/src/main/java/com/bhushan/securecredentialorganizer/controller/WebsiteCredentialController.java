@@ -27,9 +27,10 @@ public class WebsiteCredentialController {
 
     @PostMapping
     public void create(
-            @Valid @RequestBody WebsiteCredentialRequest request) {
+            @Valid @RequestBody WebsiteCredentialRequest request,
+            @RequestHeader("X-Vault-Token") String vaultToken) {
 
-        service.create(request);
+        service.create(request, vaultToken);
     }
 
     @GetMapping
@@ -62,9 +63,10 @@ public class WebsiteCredentialController {
 
     @GetMapping("/{id}/history")
     public List<PasswordHistoryResponse> getHistory(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            @RequestHeader("X-Vault-Token") String vaultToken) {
 
-        return passwordHistoryService.getHistory(id);
+        return passwordHistoryService.getHistory(id, vaultToken);
     }
 
     @GetMapping("/{id}")
@@ -77,17 +79,19 @@ public class WebsiteCredentialController {
     @PostMapping("/{id}/reveal")
     public CredentialDetailResponse reveal(
             @PathVariable Long id,
-            @Valid @RequestBody RevealCredentialRequest request) {
+            @Valid @RequestBody RevealCredentialRequest request,
+            @RequestHeader("X-Vault-Token") String vaultToken) {
 
-        return service.reveal(id, request);
+        return service.reveal(id, request, vaultToken);
     }
 
     @PutMapping("/{id}")
     public CredentialDetailResponse update(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateCredentialRequest request) {
+            @Valid @RequestBody UpdateCredentialRequest request,
+            @RequestHeader("X-Vault-Token") String vaultToken) {
 
-        return service.update(id, request);
+        return service.update(id, request, vaultToken);
     }
 
     @DeleteMapping("/{id}")

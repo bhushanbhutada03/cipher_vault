@@ -25,7 +25,7 @@ export function useUpdateProfile() {
     mutationFn: profileApi.updateProfile,
     onSuccess: (data) => {
       queryClient.setQueryData(PROFILE_QUERY_KEY, data);
-      toast.success("Profile updated successfully");
+      toast.success("Profile updated", { description: "Your profile information has been saved." });
     },
   });
 }
@@ -34,7 +34,7 @@ export function useChangeLoginPassword() {
   return useMutation<{ message: string }, ApiError, ChangeLoginPasswordRequest>({
     mutationFn: profileApi.changeLoginPassword,
     onSuccess: () => {
-      toast.success("Login password changed successfully");
+      toast.success("Login password changed", { description: "Your login password has been updated." });
     },
   });
 }
@@ -43,7 +43,7 @@ export function useChangeMasterPassword() {
   return useMutation<{ message: string }, ApiError, ChangeMasterPasswordRequest>({
     mutationFn: profileApi.changeMasterPassword,
     onSuccess: () => {
-      toast.success("Master password changed successfully");
+      toast.success("Master password changed", { description: "Your master password has been securely updated." });
     },
   });
 }

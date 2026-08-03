@@ -113,15 +113,15 @@ export function CategoryFormDialog({
   const title = mode === "create" ? "Add Category" : "Edit Category";
   const description =
     mode === "create"
-      ? "Create a category to keep related credentials grouped together."
-      : "Update the category name wherever this grouping should appear in your vault.";
+      ? "Create a category to group related credentials."
+      : "Update the category name across the vault.";
   const submitLabel = mode === "create" ? "Save Category" : "Save Changes";
 
   return (
     <Dialog.Root open={open} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-foreground/45 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-surface p-6 shadow-xl">
+        <Dialog.Overlay className="fixed inset-0 z-[60] bg-background/80 backdrop-blur-sm" />
+        <Dialog.Content className="ui-dialog-surface fixed left-1/2 top-1/2 z-[60] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border/50 bg-surface p-6 shadow-xl focus:outline-none">
           <div className="space-y-2">
             <Dialog.Title className="font-display text-xl font-semibold text-foreground">
               {title}
@@ -134,7 +134,7 @@ export function CategoryFormDialog({
           <form
             onSubmit={handleSubmit(handleFormSubmit)}
             noValidate
-            className="mt-6 space-y-5"
+            className="mt-6 space-y-6"
           >
             {formError ? <InlineAlert variant="error">{formError}</InlineAlert> : null}
 
@@ -145,21 +145,23 @@ export function CategoryFormDialog({
                 placeholder="Work"
                 autoFocus
                 hasError={Boolean(errors.categoryName)}
+                className="h-12"
                 {...register("categoryName")}
               />
               <FieldError message={errors.categoryName?.message} />
             </div>
 
-            <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <Button
                 type="button"
                 variant="outline"
+                className="h-12 sm:w-24 text-base font-medium"
                 onClick={() => handleOpenChange(false)}
                 disabled={isSubmitting}
               >
                 Cancel
               </Button>
-              <Button type="submit" isLoading={isSubmitting}>
+              <Button type="submit" isLoading={isSubmitting} className="h-12 sm:min-w-[120px] text-base font-medium">
                 {submitLabel}
               </Button>
             </div>

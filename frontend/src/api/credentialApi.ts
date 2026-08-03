@@ -7,6 +7,7 @@ import type {
   LockStatusResponse,
   RevealCredentialRequest,
   UpdateCredentialRequest,
+  CredentialHistoryResponse,
 } from "@/types/credential";
 
 export const credentialApi = {
@@ -38,6 +39,11 @@ export const credentialApi = {
 
   async toggleFavorite(id: number): Promise<void> {
     await axiosInstance.patch(`/api/credentials/${id}/favorite`);
+  },
+
+  async getHistory(id: number): Promise<CredentialHistoryResponse[]> {
+    const { data } = await axiosInstance.get<CredentialHistoryResponse[]>(`/api/credentials/${id}/history`);
+    return data;
   },
 
   async reveal(id: number, payload: RevealCredentialRequest): Promise<CredentialDetailResponse> {

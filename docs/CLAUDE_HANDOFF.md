@@ -1,4 +1,4 @@
-# Secure Credential Organizer — Frontend Handoff
+# Cipher Vault — Frontend Handoff
 
 ## IMPORTANT
 
@@ -19,7 +19,7 @@ Modify ONLY the existing project.
 # Project
 
 Name:
-Secure Credential Organizer
+Cipher Vault
 
 Type:
 Final Year Major Project

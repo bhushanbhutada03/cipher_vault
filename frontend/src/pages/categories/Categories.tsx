@@ -34,7 +34,7 @@ function PageHeader({ onAdd }: { onAdd: () => void }) {
               Organize your credentials
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-              Keep your vault structured with clear category groupings for every saved credential.
+                  Group related credentials to keep the vault organized.
             </p>
           </div>
         </div>
@@ -128,10 +128,10 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
         <FolderOpen className="size-7" aria-hidden="true" />
       </div>
       <h2 className="font-display text-2xl font-semibold text-foreground">
-        No categories yet
+        No categories
       </h2>
       <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground">
-        Create your first category to keep credentials organized and easier to manage.
+        Create your first category to organize credentials.
       </p>
       <Button type="button" className="mt-6 min-w-36" onClick={onAdd}>
         <Plus className="size-4" aria-hidden="true" />
@@ -156,7 +156,7 @@ function ErrorState({
         <AlertCircle className="size-6" aria-hidden="true" />
       </div>
       <h2 className="font-display text-2xl font-semibold text-foreground">
-        We could not load categories
+        Categories could not be loaded
       </h2>
       <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground">{message}</p>
       <Button type="button" className="mt-6 min-w-32" onClick={onRetry}>

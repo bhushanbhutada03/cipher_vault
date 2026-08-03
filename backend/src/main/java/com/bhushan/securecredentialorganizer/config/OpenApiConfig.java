@@ -21,7 +21,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(
                         new Info()
-                                .title("Secure Credential Organizer API")
+                                .title("Cipher Vault API")
                                 .version("1.0")
                                 .description("REST API for securely managing website credentials with JWT authentication, AES encryption, password generator, OTP-based password reset, categories, favorites, and dashboard analytics.")
                                 .contact(

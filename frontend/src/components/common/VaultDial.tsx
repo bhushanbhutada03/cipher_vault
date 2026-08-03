@@ -10,7 +10,14 @@ export function VaultDial({ className }: { className?: string }) {
       fill="none"
       aria-hidden="true"
     >
-      <circle cx="160" cy="160" r="150" stroke="currentColor" strokeOpacity="0.14" strokeWidth="1" />
+      <defs>
+        <linearGradient id="vault-brass" x1="86" y1="72" x2="234" y2="248" gradientUnits="userSpaceOnUse">
+          <stop stopColor="currentColor" stopOpacity="0.98" />
+          <stop offset="0.5" stopColor="currentColor" stopOpacity="0.7" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0.96" />
+        </linearGradient>
+      </defs>
+      <circle cx="160" cy="160" r="150" stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" />
       <g style={{ transformOrigin: "160px 160px", animation: "dial-turn 90s linear infinite" }}>
         {ticks.map((_, i) => {
           const angle = (i / ticks.length) * 360;
@@ -34,7 +41,7 @@ export function VaultDial({ className }: { className?: string }) {
       <circle cx="160" cy="160" r="72" fill="currentColor" fillOpacity="0.06" stroke="currentColor" strokeOpacity="0.5" strokeWidth="1.5" />
       <path
         d="M160 132a18 18 0 0 1 10 32.9V184a10 10 0 0 1-20 0v-19.1A18 18 0 0 1 160 132Z"
-        fill="currentColor"
+        fill="url(#vault-brass)"
       />
     </svg>
   );

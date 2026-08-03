@@ -115,7 +115,7 @@ export default function NewCredential() {
                   Add Credential
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                  Save a new website login to your encrypted vault.
+                  Save a credential to your vault.
                 </p>
               </div>
             </div>
@@ -149,6 +149,7 @@ export default function NewCredential() {
                   id="websiteName"
                   placeholder="GitHub"
                   hasError={Boolean(errors.websiteName)}
+                  className="h-12"
                   {...register("websiteName")}
                 />
                 <FieldError message={errors.websiteName?.message} />
@@ -160,6 +161,7 @@ export default function NewCredential() {
                   id="websiteUrl"
                   placeholder="https://github.com"
                   hasError={Boolean(errors.websiteUrl)}
+                  className="h-12"
                   {...register("websiteUrl")}
                 />
                 <FieldError message={errors.websiteUrl?.message} />
@@ -172,7 +174,7 @@ export default function NewCredential() {
                 <select
                   id="categoryId"
                   disabled={categoriesPending || !hasCategories}
-                  className="flex h-11 w-full rounded-md border border-border-strong bg-surface px-3.5 py-2 text-sm text-foreground transition-colors duration-150 focus-visible:border-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/30 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-12 w-full rounded-md border border-border-strong bg-surface px-3.5 py-2 text-sm text-foreground transition-colors duration-150 focus-visible:border-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/30 disabled:cursor-not-allowed disabled:opacity-50"
                   {...register("categoryId")}
                 >
                   <option value={0}>Select a category</option>
@@ -186,10 +188,10 @@ export default function NewCredential() {
                 {!hasCategories && !categoriesPending ? (
                   <div className="rounded-xl border border-dashed border-border-strong bg-surface-elevated px-4 py-4">
                     <p className="text-sm font-medium text-foreground">
-                      No categories available yet
+                      No categories yet
                     </p>
                     <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                      Create a category first before adding credentials.
+                      Create a category before adding credentials.
                     </p>
                     <Button
                       type="button"
@@ -210,6 +212,7 @@ export default function NewCredential() {
                   id="username"
                   placeholder="johndoe"
                   hasError={Boolean(errors.username)}
+                  className="h-12"
                   {...register("username")}
                 />
                 <FieldError message={errors.username?.message} />
@@ -224,6 +227,7 @@ export default function NewCredential() {
                   type="email"
                   placeholder="you@example.com"
                   hasError={Boolean(errors.email)}
+                  className="h-12"
                   {...register("email")}
                 />
                 <FieldError message={errors.email?.message} />
@@ -235,6 +239,7 @@ export default function NewCredential() {
                   id="password"
                   placeholder="Enter the account password"
                   hasError={Boolean(errors.password)}
+                  className="h-12"
                   {...register("password")}
                 />
                 <FieldError message={errors.password?.message} />
@@ -265,7 +270,7 @@ export default function NewCredential() {
                   Mark as favorite
                 </span>
                 <span className="mt-1 block text-sm text-muted-foreground">
-                  Pin this credential to highlight it on the dashboard.
+                  Show this credential on the dashboard.
                 </span>
               </span>
             </label>
@@ -274,14 +279,14 @@ export default function NewCredential() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full sm:w-auto"
+                className="w-full h-12 sm:w-auto"
                 onClick={() => navigate("/")}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="w-full sm:w-auto"
+                className="w-full h-12 sm:w-auto"
                 isLoading={createMutation.isPending}
                 disabled={!hasCategories || categoriesPending}
               >

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { VaultDial } from "@/components/common/VaultDial";
+import { BrandLogo } from "@/components/common/BrandLogo";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -16,7 +17,7 @@ const PRINCIPLES = [
 
 export function AuthLayout({ children, eyebrow, title, subtitle }: AuthLayoutProps) {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="ui-page-fade flex min-h-screen bg-background">
       <div className="relative hidden w-[44%] shrink-0 overflow-hidden border-r border-border bg-surface lg:flex lg:flex-col lg:justify-between">
         <div
           className="pointer-events-none absolute -left-32 -top-32 h-[560px] w-[560px] rounded-full opacity-30 blur-3xl"
@@ -24,11 +25,9 @@ export function AuthLayout({ children, eyebrow, title, subtitle }: AuthLayoutPro
         />
         <div className="relative z-10 px-12 pt-12">
           <Link to="/login" className="inline-flex items-center gap-2.5">
-            <div className="flex size-8 items-center justify-center rounded-md bg-brass text-brass-foreground">
-              <VaultDial className="size-5" />
-            </div>
+            <BrandLogo className="size-8" />
             <span className="font-display text-lg font-semibold tracking-tight text-foreground">
-            Cipher Vault
+              Cipher Vault
             </span>
           </Link>
         </div>
@@ -46,7 +45,7 @@ export function AuthLayout({ children, eyebrow, title, subtitle }: AuthLayoutPro
           <ul className="space-y-3">
             {PRINCIPLES.map((principle) => (
               <li key={principle} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                <span className="mt-2 size-1 shrink-0 rounded-full bg-brass" />
+                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brass" />
                 {principle}
               </li>
             ))}
@@ -56,9 +55,7 @@ export function AuthLayout({ children, eyebrow, title, subtitle }: AuthLayoutPro
 
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 sm:px-12">
         <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-          <div className="flex size-8 items-center justify-center rounded-md bg-brass text-brass-foreground">
-            <VaultDial className="size-5" />
-          </div>
+          <BrandLogo className="size-8" />
           <span className="font-display text-lg font-semibold tracking-tight text-foreground">
             Cipher Vault
           </span>

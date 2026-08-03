@@ -234,6 +234,7 @@ export default function EditCredential() {
                     id="websiteName"
                     placeholder="GitHub"
                     hasError={Boolean(errors.websiteName)}
+                    className="h-12"
                     {...register("websiteName")}
                   />
                   <FieldError message={errors.websiteName?.message} />
@@ -245,6 +246,7 @@ export default function EditCredential() {
                     id="websiteUrl"
                     placeholder="https://github.com"
                     hasError={Boolean(errors.websiteUrl)}
+                    className="h-12"
                     {...register("websiteUrl")}
                   />
                   <FieldError message={errors.websiteUrl?.message} />
@@ -257,7 +259,7 @@ export default function EditCredential() {
                   <select
                     id="categoryId"
                     disabled={categoriesPending || !hasCategories}
-                    className="flex h-11 w-full rounded-md border border-border-strong bg-surface px-3.5 py-2 text-sm text-foreground transition-colors duration-150 focus-visible:border-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/30 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-12 w-full rounded-md border border-border-strong bg-surface px-3.5 py-2 text-sm text-foreground transition-colors duration-150 focus-visible:border-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/30 disabled:cursor-not-allowed disabled:opacity-50"
                     {...register("categoryId")}
                   >
                     <option value={0}>Select a category</option>
@@ -276,6 +278,7 @@ export default function EditCredential() {
                     id="username"
                     placeholder="johndoe"
                     hasError={Boolean(errors.username)}
+                    className="h-12"
                     {...register("username")}
                   />
                   <FieldError message={errors.username?.message} />
@@ -290,6 +293,7 @@ export default function EditCredential() {
                     type="email"
                     placeholder="you@example.com"
                     hasError={Boolean(errors.email)}
+                    className="h-12"
                     {...register("email")}
                   />
                   <FieldError message={errors.email?.message} />
@@ -301,6 +305,7 @@ export default function EditCredential() {
                     id="password"
                     placeholder="Enter the account password"
                     hasError={Boolean(errors.password)}
+                    className="h-12"
                     {...register("password")}
                   />
                   <FieldError message={errors.password?.message} />
@@ -323,14 +328,14 @@ export default function EditCredential() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full sm:w-auto"
+                  className="w-full h-12 sm:w-auto"
                   onClick={() => navigate(`/credentials/${credentialId}`)}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full sm:w-auto"
+                  className="w-full h-12 sm:w-auto"
                   isLoading={updateMutation.isPending}
                   disabled={!hasCategories || categoriesPending}
                 >

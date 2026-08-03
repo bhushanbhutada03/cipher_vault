@@ -18,4 +18,6 @@ public interface PasswordHistoryRepository
 
     @Query("SELECT ph FROM PasswordHistory ph WHERE ph.credential.user = :user")
     List<PasswordHistory> findByCredentialUser(@Param("user") User user);
+
+    void deleteByCredential(WebsiteCredential credential);
 }

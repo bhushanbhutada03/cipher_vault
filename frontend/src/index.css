@@ -21,6 +21,9 @@
   --danger: #c4483a;
   --danger-soft: #f6e2df;
 
+  --info: #3b82f6;
+  --info-soft: #dbeafe;
+
   --ring: #9c7a1f;
 
   --radius: 0.75rem;
@@ -43,6 +46,9 @@
   --success: #34d399;
   --danger: #f2685a;
   --danger-soft: #2a1917;
+
+  --info: #60a5fa;
+  --info-soft: #1e3a8a;
 
   --ring: #d4af5a;
 }
@@ -68,6 +74,11 @@
   --color-success: var(--success);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: #ffffff;
+
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
 
   --color-ring: var(--ring);
 
@@ -124,4 +135,167 @@ body {
 @keyframes tick-fade {
   0%, 100% { opacity: 0.25; }
   50% { opacity: 1; }
+}
+
+@keyframes dialog-surface-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.97); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes dialog-surface-out {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(0.97); }
+}
+
+@keyframes brass-flash {
+  0% { box-shadow: inset 0 0 0 1px rgb(212 175 90 / 0), 0 0 0 rgb(212 175 90 / 0); }
+  45% { box-shadow: inset 0 0 0 1px rgb(212 175 90 / 0.42), 0 0 24px rgb(212 175 90 / 0.18); }
+  100% { box-shadow: inset 0 0 0 1px rgb(212 175 90 / 0), 0 0 0 rgb(212 175 90 / 0); }
+}
+
+@layer utilities {
+  .ui-interactive {
+    transition-property: transform, box-shadow, border-color, background-color, color;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+  }
+  .ui-interactive:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
+  .ui-interactive:not(:disabled):active {
+    transform: translateY(0);
+  }
+  .ui-card-interactive {
+    transition-property: transform, box-shadow, border-color, background-color;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+  }
+  .ui-card-interactive:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--brass) 42%, var(--border));
+    box-shadow: 0 14px 28px rgb(15 23 42 / 0.10);
+  }
+  .ui-icon-button {
+    transition-property: transform, color, background-color;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+  }
+  .ui-icon-button:not(:disabled):hover {
+    transform: scale(1.05);
+  }
+  .ui-dialog-surface[data-state="open"] {
+    animation: dialog-surface-in 200ms ease-out;
+  }
+  .ui-dialog-surface[data-state="closed"] {
+    animation: dialog-surface-out 180ms ease-in;
+  }
+  .ui-key-panel {
+    transition: box-shadow 200ms ease-out, border-color 200ms ease-out;
+  }
+  .ui-key-panel:hover {
+    border-color: color-mix(in srgb, var(--brass) 40%, var(--border));
+    box-shadow: inset 0 0 0 1px rgb(212 175 90 / 0.12), 0 0 20px rgb(212 175 90 / 0.10);
+  }
+  .ui-key-panel[data-copied] {
+    animation: brass-flash 300ms ease-out;
+  }
+  .ui-danger-panel {
+    transition-property: background-color, border-color;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+  }
+  .ui-danger-panel:hover {
+    background-color: color-mix(in srgb, var(--danger) 10%, transparent);
+    border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+  }
+  .ui-page-fade {
+    animation: page-fade-in 200ms ease-out;
+  }
+  .ui-brand-logo-hero-shell {
+    animation: brand-logo-float 7s ease-in-out infinite, brand-logo-glow 6s ease-in-out infinite;
+    will-change: transform, filter;
+  }
+  .ui-brand-logo-hero {
+    transform-origin: center;
+    animation: brand-logo-breath 7s ease-in-out infinite;
+    will-change: transform;
+  }
+  .ui-brand-glow-pulse {
+    animation: brand-glow-pulse 7s ease-in-out infinite;
+    will-change: opacity, transform;
+  }
+  @keyframes page-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes brand-logo-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1); }
+  }
+
+  @keyframes brand-logo-breath {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(0) scale(1.02); }
+  }
+
+  @keyframes brand-logo-glow {
+    0%, 100% { filter: drop-shadow(0 0 0 rgb(212 175 90 / 0)); }
+    50% { filter: drop-shadow(0 0 18px rgb(212 175 90 / 0.18)); }
+  }
+
+  @keyframes brand-glow-pulse {
+    0%, 100% { opacity: 0.24; transform: scale(1); }
+    50% { opacity: 0.42; transform: scale(1.03); }
+  }
+  .ui-brand-link {
+    color: var(--brass);
+    transition-property: color, text-decoration-color;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+  }
+  .ui-brand-link:hover,
+  .ui-brand-link:focus-visible {
+    color: var(--brass);
+    text-decoration-color: var(--brass);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-interactive,
+    .ui-card-interactive,
+    .ui-icon-button,
+    .ui-brand-link,
+    .ui-dialog-surface,
+    .ui-key-panel,
+    .ui-danger-panel,
+    .ui-page-fade,
+    .ui-brand-logo-hero-shell,
+    .ui-brand-logo-hero,
+    .ui-brand-glow-pulse {
+      transition-duration: 0.01ms;
+      animation-duration: 0.01ms;
+    }
+    .ui-interactive:not(:disabled):hover,
+    .ui-card-interactive:hover,
+    .ui-icon-button:not(:disabled):hover {
+      transform: none;
+    }
+  }
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 20px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-border-strong);
+  }
 }

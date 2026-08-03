@@ -18,61 +18,76 @@ import com.bhushan.securecredentialorganizer.repository.WebsiteCredentialReposit
 import com.bhushan.securecredentialorganizer.security.CustomUserDetails;
 import com.bhushan.securecredentialorganizer.service.BruteForceProtectionService;
 import com.bhushan.securecredentialorganizer.service.WebsiteCredentialService;
+import com.bhushan.securecredentialorganizer.encryption.VaultTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+import java.util.Base64;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class WebsiteCredentialServiceImpl
         implements WebsiteCredentialService {
 
     private final WebsiteCredentialRepository websiteCredentialRepository;
     private final CategoryRepository categoryRepository;
-    private final EncryptionService encryptionService;
+    private final com.bhushan.securecredentialorganizer.encryption.CredentialCryptoService credentialCryptoService;
     private final PasswordEncoder passwordEncoder;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final BruteForceProtectionService attemptService;
+    private final VaultTokenService vaultTokenService;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
     @Override
-    public void create(WebsiteCredentialRequest request) {
+    @Transactional
+    public void create(WebsiteCredentialRequest request, String vaultToken) {
 
         User user = getCurrentUser();
+        byte[] dek = vaultTokenService.extractDek(vaultToken, user.getTokenVersion());
 
-        Category category = categoryRepository
-                .findByIdAndUser(request.getCategoryId(), user)
-                .orElseThrow(() ->
-                        new RuntimeException("Category not found."));
+        try {
+            Category category = categoryRepository
+                    .findByIdAndUser(request.getCategoryId(), user)
+                    .orElseThrow(() ->
+                            new RuntimeException("Category not found."));
+            
+            String credentialUuid = UUID.randomUUID().toString();
 
-        WebsiteCredential credential = WebsiteCredential.builder()
-                .user(user)
-                .category(category)
-                .websiteName(request.getWebsiteName())
-                .websiteUrl(request.getWebsiteUrl())
-                .usernameEncrypted(
-                        encryptionService.encrypt(
-                                request.getUsername()))
-                .emailEncrypted(
-                        request.getEmail() == null || request.getEmail().isEmpty()
-                                ? null
-                                : encryptionService.encrypt(
-                                request.getEmail()))
-                .passwordEncrypted(
-                        encryptionService.encrypt(
-                                request.getPassword()))
-                .notesEncrypted(
-                        request.getNotes() == null
-                                ? null
-                                : encryptionService.encrypt(
-                                request.getNotes()))
-                .favorite(request.isFavorite())
-                .build();
+            WebsiteCredential credential = WebsiteCredential.builder()
+                    .user(user)
+                    .category(category)
+                    .websiteName(request.getWebsiteName())
+                    .websiteUrl(request.getWebsiteUrl())
+                    .credentialUuid(credentialUuid)
+                    .usernameEncrypted(
+                            credentialCryptoService.encryptField(
+                                    request.getUsername(), dek, user.getId(), credentialUuid, "username"))
+                    .emailEncrypted(
+                            credentialCryptoService.encryptField(
+                                    request.getEmail(), dek, user.getId(), credentialUuid, "email"))
+                    .passwordEncrypted(
+                            credentialCryptoService.encryptField(
+                                    request.getPassword(), dek, user.getId(), credentialUuid, "password"))
+                    .notesEncrypted(
+                            credentialCryptoService.encryptField(
+                                    request.getNotes(), dek, user.getId(), credentialUuid, "notes"))
+                    .favorite(request.isFavorite())
+                    .build();
 
-        websiteCredentialRepository.save(credential);
+            websiteCredentialRepository.save(credential);
+        } finally {
+            if (dek != null) Arrays.fill(dek, (byte) 0);
+        }
     }
 
     @Override
@@ -112,6 +127,7 @@ public class WebsiteCredentialServiceImpl
     }
 
     @Override
+    @Transactional
     public void toggleFavorite(Long id) {
 
         User user = getCurrentUser();
@@ -159,28 +175,47 @@ public class WebsiteCredentialServiceImpl
     }
 
     private CredentialDetailResponse mapToDetailResponse(
-            WebsiteCredential credential) {
+            WebsiteCredential credential, byte[] dek, User user) {
+
+        String usernamePlain = credentialCryptoService.decryptField(
+                credential.getUsernameEncrypted(), dek, user.getId(), credential.getCredentialUuid(), "username");
+        String emailPlain = credentialCryptoService.decryptField(
+                credential.getEmailEncrypted(), dek, user.getId(), credential.getCredentialUuid(), "email");
+        String passwordPlain = credentialCryptoService.decryptField(
+                credential.getPasswordEncrypted(), dek, user.getId(), credential.getCredentialUuid(), "password");
+        String notesPlain = credentialCryptoService.decryptField(
+                credential.getNotesEncrypted(), dek, user.getId(), credential.getCredentialUuid(), "notes");
+
+        boolean needsMigration = false;
+        if (credential.getUsernameEncrypted() != null && !credential.getUsernameEncrypted().startsWith("V2$")) needsMigration = true;
+        if (credential.getEmailEncrypted() != null && !credential.getEmailEncrypted().startsWith("V2$")) needsMigration = true;
+        if (credential.getPasswordEncrypted() != null && !credential.getPasswordEncrypted().startsWith("V2$")) needsMigration = true;
+        if (credential.getNotesEncrypted() != null && !credential.getNotesEncrypted().startsWith("V2$")) needsMigration = true;
+
+        if (needsMigration) {
+            byte[] dekCopy = Arrays.copyOf(dek, dek.length);
+            com.bhushan.securecredentialorganizer.encryption.CredentialMigrationEvent event =
+                    new com.bhushan.securecredentialorganizer.encryption.CredentialMigrationEvent(
+                            credential.getId(),
+                            user.getId(),
+                            credential.getCredentialUuid(),
+                            usernamePlain,
+                            emailPlain,
+                            passwordPlain,
+                            notesPlain,
+                            dekCopy
+                    );
+            eventPublisher.publishEvent(event);
+        }
 
         return CredentialDetailResponse.builder()
                 .id(credential.getId())
                 .websiteName(credential.getWebsiteName())
                 .websiteUrl(credential.getWebsiteUrl())
-                .username(
-                        encryptionService.decrypt(
-                                credential.getUsernameEncrypted()))
-                .email(
-                        credential.getEmailEncrypted() == null
-                                ? null
-                                : encryptionService.decrypt(
-                                credential.getEmailEncrypted()))
-                .password(
-                        encryptionService.decrypt(
-                                credential.getPasswordEncrypted()))
-                .notes(
-                        credential.getNotesEncrypted() == null
-                                ? null
-                                : encryptionService.decrypt(
-                                credential.getNotesEncrypted()))
+                .username(usernamePlain)
+                .email(emailPlain)
+                .password(passwordPlain)
+                .notes(notesPlain)
                 .categoryName(
                         credential.getCategory().getCategoryName())
                 .favorite(credential.isFavorite())
@@ -203,99 +238,114 @@ public class WebsiteCredentialServiceImpl
     @Override
     public CredentialDetailResponse reveal(
             Long id,
-            RevealCredentialRequest request) {
+            RevealCredentialRequest request,
+            String vaultToken) {
 
         User user = getCurrentUser();
+        byte[] dek = vaultTokenService.extractDek(vaultToken, user.getTokenVersion());
 
-        verifyMasterPassword(
-                user,
-                request.getMasterPassword());
+        try {
+            verifyMasterPassword(
+                    user,
+                    request.getMasterPassword());
 
-        WebsiteCredential credential =
-                websiteCredentialRepository
-                        .findByIdAndUser(id, user)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Credential not found."));
+            WebsiteCredential credential =
+                    websiteCredentialRepository
+                            .findByIdAndUser(id, user)
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Credential not found."));
 
-        return mapToDetailResponse(credential);
+            return mapToDetailResponse(credential, dek, user);
+        } finally {
+            if (dek != null) Arrays.fill(dek, (byte) 0);
+        }
     }
 
     @Override
+    @Transactional
     public CredentialDetailResponse update(
             Long id,
-            UpdateCredentialRequest request) {
+            UpdateCredentialRequest request,
+            String vaultToken) {
 
         User user = getCurrentUser();
+        byte[] dek = vaultTokenService.extractDek(vaultToken, user.getTokenVersion());
 
-        verifyMasterPassword(
-                user,
-                request.getMasterPassword());
+        try {
+            verifyMasterPassword(
+                    user,
+                    request.getMasterPassword());
 
-        WebsiteCredential credential =
-                websiteCredentialRepository
-                        .findByIdAndUser(id, user)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Credential not found."));
+            WebsiteCredential credential =
+                    websiteCredentialRepository
+                            .findByIdAndUser(id, user)
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Credential not found."));
 
-        Category category =
-                categoryRepository
-                        .findByIdAndUser(
-                                request.getCategoryId(),
-                                user)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Category not found."));
+            Category category =
+                    categoryRepository
+                            .findByIdAndUser(
+                                    request.getCategoryId(),
+                                    user)
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Category not found."));
 
-        credential.setCategory(category);
-        credential.setWebsiteName(request.getWebsiteName());
-        credential.setWebsiteUrl(request.getWebsiteUrl());
+            credential.setCategory(category);
+            credential.setWebsiteName(request.getWebsiteName());
+            credential.setWebsiteUrl(request.getWebsiteUrl());
 
-        credential.setUsernameEncrypted(
-                encryptionService.encrypt(
-                        request.getUsername()));
+            credential.setUsernameEncrypted(
+                    credentialCryptoService.encryptField(
+                            request.getUsername(), dek, user.getId(), credential.getCredentialUuid(), "username"));
 
-        credential.setEmailEncrypted(
-                request.getEmail() == null || request.getEmail().isEmpty()
-                        ? null
-                        : encryptionService.encrypt(
-                        request.getEmail()));
+            credential.setEmailEncrypted(
+                    credentialCryptoService.encryptField(
+                            request.getEmail(), dek, user.getId(), credential.getCredentialUuid(), "email"));
 
-        String newEncryptedPassword =
-                encryptionService.encrypt(
-                        request.getPassword());
+            String newEncryptedPassword =
+                    credentialCryptoService.encryptField(
+                            request.getPassword(), dek, user.getId(), credential.getCredentialUuid(), "password");
 
-        if (!credential.getPasswordEncrypted()
-                .equals(newEncryptedPassword)) {
+            // Simple string comparison works for V2 ciphertext because AAD binds to same ID and field,
+            // but IV will be different every time! So simple equality check will ALWAYS be false if we re-encrypt.
+            // We must decrypt the old password and compare plaintexts.
+            String oldPlaintextPassword = credentialCryptoService.decryptField(
+                    credential.getPasswordEncrypted(), dek, user.getId(), credential.getCredentialUuid(), "password");
 
-            PasswordHistory history =
-                    PasswordHistory.builder()
-                            .credential(credential)
-                            .oldPasswordEncrypted(
-                                    credential.getPasswordEncrypted())
-                            .build();
+            if (!request.getPassword().equals(oldPlaintextPassword)) {
 
-            passwordHistoryRepository.save(history);
+                PasswordHistory history =
+                        PasswordHistory.builder()
+                                .credential(credential)
+                                .oldPasswordEncrypted(
+                                        credential.getPasswordEncrypted())
+                                .build();
 
-            credential.setPasswordEncrypted(
-                    newEncryptedPassword);
+                passwordHistoryRepository.save(history);
+
+                credential.setPasswordEncrypted(
+                        newEncryptedPassword);
+            }
+
+            credential.setNotesEncrypted(
+                    credentialCryptoService.encryptField(
+                            request.getNotes(), dek, user.getId(), credential.getCredentialUuid(), "notes"));
+
+            credential.setFavorite(request.isFavorite());
+
+            websiteCredentialRepository.save(credential);
+
+            return mapToDetailResponse(credential, dek, user);
+        } finally {
+            if (dek != null) Arrays.fill(dek, (byte) 0);
         }
-
-        credential.setNotesEncrypted(
-                request.getNotes() == null
-                        ? null
-                        : encryptionService.encrypt(
-                        request.getNotes()));
-
-        credential.setFavorite(request.isFavorite());
-
-        websiteCredentialRepository.save(credential);
-
-        return mapToDetailResponse(credential);
     }
 
     @Override
+    @Transactional
     public void delete(
             Long id,
             DeleteCredentialRequest request) {
@@ -313,6 +363,7 @@ public class WebsiteCredentialServiceImpl
                                 new RuntimeException(
                                         "Credential not found."));
 
+        passwordHistoryRepository.deleteByCredential(credential);
         websiteCredentialRepository.delete(credential);
     }
 

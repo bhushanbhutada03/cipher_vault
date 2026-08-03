@@ -11,7 +11,7 @@ import {
   Wand2,
   X,
 } from "lucide-react";
-import { VaultDial } from "@/components/common/VaultDial";
+import { BrandLogo } from "@/components/common/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/utils/cn";
@@ -38,10 +38,10 @@ const NAV_ITEMS: NavItem[] = [
 
 function navLinkClass(isActive: boolean) {
   return cn(
-    "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors duration-150",
+    "relative flex w-full items-center gap-3 overflow-hidden rounded-lg px-3 py-2.5 text-sm transition-all duration-200 ease-out before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:origin-center before:bg-brass before:transition-transform before:duration-200 before:ease-out",
     isActive
-      ? "bg-brass-soft font-medium text-brass"
-      : "text-muted-foreground hover:bg-background hover:text-foreground"
+      ? "bg-brass-soft font-medium text-brass before:scale-y-100"
+      : "text-muted-foreground before:scale-y-0 hover:bg-background hover:text-foreground"
   );
 }
 
@@ -77,9 +77,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           onClick={onClose}
           className="flex items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-brass"
         >
-          <div className="flex size-7 items-center justify-center rounded-md bg-brass">
-            <VaultDial className="size-[18px] text-brass-foreground" />
-          </div>
+          <BrandLogo className="size-7" />
           <span className="font-display text-base font-semibold tracking-tight text-foreground">
             Cipher Vault
           </span>

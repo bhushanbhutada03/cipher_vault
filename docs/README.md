@@ -1,4 +1,4 @@
-# Secure Credential Organizer
+# Cipher Vault
 
 Final Year Major Project
 

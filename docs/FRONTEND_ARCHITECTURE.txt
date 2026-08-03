@@ -5,7 +5,7 @@
 
 # Project Name
 
-Secure Credential Organizer UI
+Cipher Vault UI
 
 ---
 
@@ -7194,7 +7194,7 @@ Always prefer clean architecture over writing code quickly.
 
 Project Name
 
-Secure Credential Organizer UI
+Cipher Vault UI
 
 Backend
 

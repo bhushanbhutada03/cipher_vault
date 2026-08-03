@@ -14,12 +14,13 @@ public class BruteForceProtectionService {
         LOGIN,
         MASTER_PASSWORD,
         FORGOT_PASSWORD,
-        OTP_VERIFICATION
+        OTP_VERIFICATION,
+        VAULT_UNLOCK
     }
 
     private static class AttemptRecord {
-        int failedAttempts = 0;
-        LocalDateTime lockedUntil = null;
+        java.util.concurrent.atomic.AtomicInteger failedAttempts = new java.util.concurrent.atomic.AtomicInteger(0);
+        volatile LocalDateTime lockedUntil = null;
     }
 
     private final ConcurrentHashMap<String, AttemptRecord> attemptCache = new ConcurrentHashMap<>();
@@ -40,7 +41,7 @@ public class BruteForceProtectionService {
                         remainingSeconds
                 );
             } else {
-                record.failedAttempts = 0;
+                record.failedAttempts.set(0);
                 record.lockedUntil = null;
             }
         }
@@ -49,9 +50,9 @@ public class BruteForceProtectionService {
     public int recordFailedAttempt(Scope scope, String identifier, int maxAttempts, long lockDurationSeconds) {
         String key = generateKey(scope, identifier);
         AttemptRecord record = attemptCache.computeIfAbsent(key, k -> new AttemptRecord());
-        record.failedAttempts++;
+        int currentAttempts = record.failedAttempts.incrementAndGet();
 
-        if (record.failedAttempts >= maxAttempts) {
+        if (currentAttempts >= maxAttempts) {
             record.lockedUntil = LocalDateTime.now().plusSeconds(lockDurationSeconds);
             throw new BruteForceLockedException(
                     "Too many failed attempts. Try again later.",
@@ -59,7 +60,7 @@ public class BruteForceProtectionService {
             );
         }
 
-        return maxAttempts - record.failedAttempts;
+        return maxAttempts - currentAttempts;
     }
 
     public void resetAttempts(Scope scope, String identifier) {

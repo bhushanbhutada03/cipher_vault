@@ -9,6 +9,7 @@ import {
   Shield,
   Star,
   Trash2,
+  History,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -16,11 +17,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MasterPasswordDialog } from "@/components/common/MasterPasswordDialog";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { PasswordHistoryDialog } from "@/components/common/PasswordHistoryDialog";
 import {
   useCredential,
   useDeleteCredentialMutation,
   useRevealMutation,
   useToggleFavoriteMutation,
+  useCredentialHistory,
 } from "@/hooks/useCredentials";
 import type { CredentialDetailResponse } from "@/types/credential";
 
@@ -30,6 +33,7 @@ export default function CredentialDetail() {
   const navigate = useNavigate();
 
   const { data: credential, isPending, error } = useCredential(credentialId);
+  const { data: history } = useCredentialHistory(credentialId, true);
   const toggleFavorite = useToggleFavoriteMutation();
   const revealMutation = useRevealMutation();
   const deleteMutation = useDeleteCredentialMutation();
@@ -41,13 +45,14 @@ export default function CredentialDetail() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [deleteMasterPassword, setDeleteMasterPassword] = useState("");
+  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
 
   const handleCopy = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(`${label} copied to clipboard`);
+      toast.success(`${label} copied`, { description: "Ready to paste." });
     } catch {
-      toast.error(`Failed to copy ${label}`);
+      toast.error("Copy failed", { description: `Failed to copy ${label}.` });
     }
   };
 
@@ -58,7 +63,7 @@ export default function CredentialDetail() {
         onSuccess: (data) => {
           setRevealedData(data);
           setIsRevealDialogOpen(false);
-          toast.success("Credential unlocked successfully");
+          toast.success("Credential unlocked", { description: "Password revealed successfully." });
         },
       }
     );
@@ -75,7 +80,7 @@ export default function CredentialDetail() {
       { id: credentialId, payload: { masterPassword: deleteMasterPassword } },
       {
         onSuccess: () => {
-          toast.success("Credential deleted successfully");
+          toast.success("Credential deleted", { description: "The credential has been permanently removed." });
           navigate("/credentials", { replace: true });
         },
       }
@@ -159,6 +164,15 @@ export default function CredentialDetail() {
                   }`}
                 />
               </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-10 px-4"
+                onClick={() => setIsHistoryDialogOpen(true)}
+              >
+                <History className="mr-2 size-4 text-muted-foreground" />
+                Password History {history ? `(${history.length})` : "(0)"}
+              </Button>
               <Button variant="outline" asChild>
                 <Link to={`/credentials/${credentialId}/edit`}>
                   <Edit2 className="mr-2 size-4" />
@@ -200,13 +214,14 @@ export default function CredentialDetail() {
                   <Input
                     readOnly
                     value={revealedData ? revealedData.username : "••••••••••••••••"}
-                    className={revealedData ? "" : "font-mono tracking-widest text-muted-foreground"}
+                    className={revealedData ? "h-12" : "h-12 font-mono tracking-widest text-muted-foreground"}
                   />
                   {revealedData ? (
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
+                      className="size-12"
                       onClick={() => handleCopy(revealedData.username, "Username")}
                     >
                       <Copy className="size-4" />
@@ -222,11 +237,13 @@ export default function CredentialDetail() {
                     <Input
                       readOnly
                       value={revealedData.email}
+                      className="h-12"
                     />
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
+                      className="size-12"
                       onClick={() => handleCopy(revealedData.email || "", "Email")}
                     >
                       <Copy className="size-4" />
@@ -242,12 +259,13 @@ export default function CredentialDetail() {
                     readOnly
                     type={revealedData?.password ? "text" : "password"}
                     value={revealedData?.password || "••••••••••••••••"}
-                    className={revealedData?.password ? "" : "font-mono tracking-widest"}
+                    className={revealedData?.password ? "h-12" : "h-12 font-mono tracking-widest"}
                   />
                   {!revealedData ? (
                     <Button
                       type="button"
                       variant="outline"
+                      className="h-12 px-4"
                       onClick={() => setIsRevealDialogOpen(true)}
                     >
                       <Eye className="mr-2 size-4" />
@@ -258,6 +276,7 @@ export default function CredentialDetail() {
                       type="button"
                       variant="outline"
                       size="icon"
+                      className="size-12"
                       onClick={() => handleCopy(revealedData.password || "", "Password")}
                     >
                       <Copy className="size-4" />
@@ -270,7 +289,7 @@ export default function CredentialDetail() {
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label>Category</Label>
-                <div className="flex h-11 items-center gap-2 rounded-md border border-border bg-surface-elevated px-3">
+                <div className="flex h-12 items-center gap-2 rounded-md border border-border bg-surface-elevated px-3">
                   <FolderOpen className="size-4 text-muted-foreground" />
                   <span className="text-sm font-medium">{credential.categoryName}</span>
                 </div>
@@ -300,6 +319,7 @@ export default function CredentialDetail() {
         isSubmitting={revealMutation.isPending}
         error={revealMutation.error}
         onSubmit={handleRevealPassword}
+        actionScope="reveal"
       />
 
       <MasterPasswordDialog
@@ -309,6 +329,7 @@ export default function CredentialDetail() {
         description="Please enter your master password to authorize deletion."
         submitLabel="Continue"
         onSubmit={handleDeletePasswordPrompt}
+        actionScope="delete"
       />
 
       <ConfirmDialog
@@ -320,6 +341,12 @@ export default function CredentialDetail() {
         confirmVariant="destructive"
         isConfirming={deleteMutation.isPending}
         onConfirm={handleConfirmDelete}
+      />
+      
+      <PasswordHistoryDialog
+        open={isHistoryDialogOpen}
+        onOpenChange={setIsHistoryDialogOpen}
+        credentialId={credentialId}
       />
     </main>
   );

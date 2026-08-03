@@ -12,6 +12,7 @@ import { InlineAlert } from "@/components/common/InlineAlert";
 import { useLoginMutation } from "@/hooks/useAuthMutations";
 import { useAuth } from "@/hooks/useAuth";
 import { loginSchema, type LoginFormValues } from "@/pages/auth/login.schema";
+import { isEmailNotVerifiedError } from "@/utils/authHelpers";
 import type { ApiError } from "@/types/api";
 
 export default function Login() {
@@ -55,8 +56,12 @@ export default function Login() {
         setToken(data.token);
         navigate(redirectTo, { replace: true });
       },
-      onError: (error) => {
+      onError: (error, variables) => {
         const apiError = error as ApiError;
+        if (isEmailNotVerifiedError(apiError)) {
+          navigate("/verify-email", { replace: true, state: { email: variables.email } });
+          return;
+        }
         if (apiError.status === 429 && apiError.remainingSeconds) {
           setLockoutSeconds(apiError.remainingSeconds);
           setFormError(null);
@@ -74,9 +79,9 @@ export default function Login() {
     <AuthLayout
       eyebrow="Welcome back"
       title="Sign in to your vault"
-      subtitle="Enter your credentials to access your saved passwords."
+      subtitle="Use your email and password to access the vault."
     >
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6 mt-6">
         {lockoutSeconds > 0 ? (
           <InlineAlert variant="error">
             Too many failed login attempts. Try again in {lockoutSeconds} seconds.
@@ -90,7 +95,7 @@ export default function Login() {
           </InlineAlert>
         ) : null}
 
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
@@ -98,19 +103,19 @@ export default function Login() {
             autoComplete="email"
             placeholder="you@company.com"
             hasError={Boolean(errors.email) || lockoutSeconds > 0}
-            className="mt-1.5"
+            className="h-12"
             disabled={loginMutation.isPending || lockoutSeconds > 0}
             {...register("email")}
           />
           <FieldError message={errors.email?.message} />
         </div>
 
-        <div>
+        <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="loginPassword">Password</Label>
             <Link
               to="/forgot-password"
-              className="text-xs font-medium text-brass hover:underline"
+              className="ui-brand-link text-sm font-medium hover:underline"
             >
               Forgot password?
             </Link>
@@ -120,7 +125,7 @@ export default function Login() {
             autoComplete="current-password"
             placeholder="••••••••"
             hasError={Boolean(errors.loginPassword) || lockoutSeconds > 0}
-            className="mt-1.5"
+            className="h-12"
             disabled={loginMutation.isPending || lockoutSeconds > 0}
             {...register("loginPassword")}
           />
@@ -130,7 +135,7 @@ export default function Login() {
         <Button
           type="submit"
           size="lg"
-          className="w-full"
+          className="w-full h-12 text-base mt-2"
           isLoading={loginMutation.isPending}
           disabled={lockoutSeconds > 0}
         >
@@ -140,8 +145,8 @@ export default function Login() {
 
       <p className="mt-8 text-center text-sm text-muted-foreground">
         Don't have an account?{" "}
-        <Link to="/register" className="font-medium text-brass hover:underline">
-          Create one
+        <Link to="/register" className="ui-brand-link font-medium hover:underline">
+          Create account
         </Link>
       </p>
     </AuthLayout>

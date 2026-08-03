@@ -8,6 +8,7 @@ import type {
   LockStatusResponse,
   RevealCredentialRequest,
   UpdateCredentialRequest,
+  CredentialHistoryResponse,
 } from "@/types/credential";
 
 // ── Queries ─────────────────────────────────────────────────────────
@@ -39,6 +40,14 @@ export function useCredential(id: number) {
     queryKey: ["credentials", id],
     queryFn: () => credentialApi.getById(id),
     enabled: !isNaN(id),
+  });
+}
+
+export function useCredentialHistory(id: number, enabled: boolean = false) {
+  return useQuery<CredentialHistoryResponse[], ApiError>({
+    queryKey: ["credentials", id, "history"],
+    queryFn: () => credentialApi.getHistory(id),
+    enabled: !isNaN(id) && enabled,
   });
 }
 

@@ -18,6 +18,10 @@ export const registerSchema = z
   .refine((data) => data.masterPassword === data.confirmMasterPassword, {
     message: "Master passwords do not match",
     path: ["confirmMasterPassword"],
+  })
+  .refine((data) => data.loginPassword !== data.masterPassword, {
+    message: "Master Password must be different from Login Password",
+    path: ["masterPassword"],
   });
 
 export type RegisterFormValues = z.infer<typeof registerSchema>;

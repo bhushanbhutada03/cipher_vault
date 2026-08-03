@@ -22,10 +22,28 @@ public class User {
     @Column(name = "id")
     private Long id;
 
+    @Version
+    @Builder.Default
+    @Column(name = "version", nullable = false)
+    private Long version = 0L;
+
+    @Column(name = "kdf_salt", columnDefinition = "VARBINARY(32)")
+    private byte[] kdfSalt;
+
+    @Column(name = "encrypted_dek_master", length = 255)
+    private String encryptedDekMaster;
+
+    @Column(name = "encrypted_dek_recovery", length = 255)
+    private String encryptedDekRecovery;
+
+    @Builder.Default
+    @Column(name = "token_version", nullable = false)
+    private Integer tokenVersion = 0;
+
     @Column(name = "full_name", nullable = false, length = 100)
     private String fullName;
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
     @Column(name = "login_password_hash", nullable = false, length = 255)

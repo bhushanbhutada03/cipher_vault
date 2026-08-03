@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/common/PasswordInput";
 import { InlineAlert } from "@/components/common/InlineAlert";
 import { useMasterPasswordLockStatusQuery } from "@/hooks/useCredentials";
+import { useAuth } from "@/hooks/useAuth";
+import { vaultTokenService } from "@/services/vaultTokenService";
 import type { ApiError } from "@/types/api";
 
 interface MasterPasswordDialogProps {
@@ -15,6 +17,8 @@ interface MasterPasswordDialogProps {
   submitLabel?: string;
   isSubmitting?: boolean;
   error?: ApiError | string | null;
+  actionScope?: string;
+  onReset?: () => void;
   onSubmit: (password: string) => void;
 }
 
@@ -26,6 +30,8 @@ export function MasterPasswordDialog({
   submitLabel = "Verify",
   isSubmitting = false,
   error = null,
+  actionScope = "default",
+  onReset,
   onSubmit,
 }: MasterPasswordDialogProps) {
   const [password, setPassword] = useState("");
@@ -33,15 +39,35 @@ export function MasterPasswordDialog({
 
   const { data: lockStatus } = useMasterPasswordLockStatusQuery(open);
 
+  const { logout } = useAuth();
+
+  useEffect(() => {
+    setPassword("");
+  }, [open]);
+
   useEffect(() => {
     if (lockStatus?.locked && lockStatus.remainingSeconds > 0) {
       setLockoutSeconds(lockStatus.remainingSeconds);
-    } else if (error && typeof error === "object" && error.status === 429 && error.remainingSeconds) {
-      setLockoutSeconds(error.remainingSeconds);
+    } else if (error && typeof error === "object") {
+      // 3-Attempt Policy check
+      if (error.status !== 429) {
+        const failures = vaultTokenService.recordFailure(actionScope);
+        if (failures >= 3) {
+          vaultTokenService.clearToken();
+          logout();
+          return;
+        }
+      }
+      
+      if (error.status === 429 && error.remainingSeconds) {
+        setLockoutSeconds(error.remainingSeconds);
+      } else {
+        setLockoutSeconds(0);
+      }
     } else {
       setLockoutSeconds(0);
     }
-  }, [error, open, lockStatus]);
+  }, [error, open, lockStatus, logout, actionScope]);
 
   useEffect(() => {
     if (lockoutSeconds <= 0) return;
@@ -62,21 +88,25 @@ export function MasterPasswordDialog({
   const handleOpenChange = (isOpen: boolean) => {
     if (!isOpen) {
       setPassword("");
+      setLockoutSeconds(0);
+      onReset?.();
     }
     onOpenChange(isOpen);
   };
 
+  const remainingAttempts = 3 - vaultTokenService.getFailures(actionScope);
+
   return (
     <Dialog.Root open={open} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-foreground/45 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-surface shadow-xl focus:outline-none">
+        <Dialog.Overlay className="fixed inset-0 z-[60] bg-background/80 backdrop-blur-sm" />
+        <Dialog.Content className="ui-dialog-surface fixed left-1/2 top-1/2 z-[60] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border/50 bg-surface shadow-xl focus:outline-none">
           <div className="flex items-center justify-between border-b border-border px-6 py-4">
             <Dialog.Title className="flex items-center gap-2 font-display text-lg font-semibold text-foreground">
               <Lock className="size-4 text-brass" />
               {title}
             </Dialog.Title>
-            <Dialog.Close className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-background hover:text-foreground">
+            <Dialog.Close className="ui-icon-button rounded-md p-1.5 text-muted-foreground hover:bg-background hover:text-foreground">
               <X className="size-4" />
             </Dialog.Close>
           </div>
@@ -96,8 +126,8 @@ export function MasterPasswordDialog({
               <div className="mb-4">
                 <InlineAlert variant="error">
                   {typeof error === "string" ? error : error.message}
-                  {typeof error === "object" && typeof error.remainingAttempts === "number" && (
-                    <span className="ml-1 font-semibold">{error.remainingAttempts} attempt{error.remainingAttempts === 1 ? "" : "s"} remaining.</span>
+                  {remainingAttempts > 0 && typeof error === "object" && error.status !== 429 && (
+                    <span className="ml-1 font-semibold">{remainingAttempts} attempt{remainingAttempts === 1 ? "" : "s"} remaining.</span>
                   )}
                 </InlineAlert>
               </div>
@@ -108,6 +138,7 @@ export function MasterPasswordDialog({
                 Master Password
               </label>
               <PasswordInput
+                key={open ? "open" : "closed"}
                 id="masterPassword"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -115,13 +146,15 @@ export function MasterPasswordDialog({
                 hasError={Boolean(error) || lockoutSeconds > 0}
                 autoFocus
                 disabled={isSubmitting || lockoutSeconds > 0}
+                className="h-12"
               />
             </div>
 
-            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <Button
                 type="button"
                 variant="outline"
+                className="h-12 sm:w-24 text-base font-medium"
                 onClick={() => handleOpenChange(false)}
                 disabled={isSubmitting}
               >
@@ -129,6 +162,7 @@ export function MasterPasswordDialog({
               </Button>
               <Button
                 type="submit"
+                className="h-12 sm:min-w-[120px] text-base font-medium"
                 isLoading={isSubmitting}
                 disabled={!password.trim() || lockoutSeconds > 0}
               >

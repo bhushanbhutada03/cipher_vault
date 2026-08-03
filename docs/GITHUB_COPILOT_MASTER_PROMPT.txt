@@ -1,5 +1,5 @@
 # MASTER PROMPT — GitHub Copilot Agent (VS Code)
-## Secure Credential Organizer UI — Project Foundation & Scaffold Only
+## Cipher Vault UI — Project Foundation & Scaffold Only
 
 ---
 
@@ -36,7 +36,7 @@ Do NOT:
 
 ## PROJECT
 
-- **Name:** Secure Credential Organizer UI
+- **Name:** Cipher Vault UI
 - **Backend:** Already complete — Spring Boot, JWT, MySQL, AES encryption, Swagger, Docker. Do not redesign or call it yet; only reserve the Axios/env plumbing for it.
 - **Design inspiration:** Apple, Proton Pass, Bitwarden, 1Password, Linear, Vercel. Must look like a premium SaaS product, never a generic admin dashboard, never Bootstrap/AdminLTE-style.
 

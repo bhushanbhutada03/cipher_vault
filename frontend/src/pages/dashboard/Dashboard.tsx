@@ -23,7 +23,7 @@ function SummaryCard({
   value: number;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-5 shadow-sm">
+    <div className="ui-card-interactive group rounded-xl border border-border bg-surface p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
@@ -31,7 +31,7 @@ function SummaryCard({
             {value.toLocaleString()}
           </p>
         </div>
-        <div className="flex size-11 items-center justify-center rounded-lg bg-brass-soft text-brass">
+        <div className="flex size-11 items-center justify-center rounded-lg bg-brass-soft text-brass transition-transform duration-200 ease-out group-hover:scale-[1.05]">
           {icon}
         </div>
       </div>
@@ -61,7 +61,7 @@ function RecentCredentialRow({
   const [imageFailed, setImageFailed] = useState(false);
 
   return (
-    <article className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-4 shadow-sm transition-colors sm:flex-row sm:items-center sm:justify-between">
+    <article className="ui-card-interactive flex flex-col gap-4 rounded-xl border border-border bg-surface p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 items-center gap-4">
         <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border-strong bg-surface-elevated">
           {credential.faviconUrl && !imageFailed ? (
@@ -155,7 +155,7 @@ export default function Dashboard() {
   const showEmpty = !showLoading && !showError && !hasCredentials;
 
   return (
-    <main className="min-h-screen bg-background px-4 py-6 text-foreground sm:px-6 lg:px-8">
+    <main className="ui-page-fade min-h-screen bg-background px-4 py-6 text-foreground sm:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
         <section className="rounded-2xl border border-border bg-surface px-5 py-6 shadow-sm sm:px-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -165,10 +165,10 @@ export default function Dashboard() {
               </p>
               <div>
                 <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                  Your credential vault at a glance
+                  Vault overview
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                  Track stored passwords, highlight favorites, and review your latest saved entries.
+                  Review saved credentials, favorites, and recent activity.
                 </p>
               </div>
             </div>
@@ -224,7 +224,7 @@ export default function Dashboard() {
                   Recent Credentials
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  The latest credentials stored in your vault.
+                  Latest saved credentials.
                 </p>
               </div>
 
@@ -241,10 +241,10 @@ export default function Dashboard() {
                       <FolderOpen className="size-7" aria-hidden="true" />
                     </div>
                     <h3 className="font-display text-2xl font-semibold text-foreground">
-                      No credentials added yet
+                      No credentials yet
                     </h3>
                     <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground">
-                      Save your first credential to start tracking accounts, favorites, and categories.
+                      Add your first credential to get started.
                     </p>
                     <Button
                       type="button"

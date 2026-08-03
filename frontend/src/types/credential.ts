@@ -35,6 +35,11 @@ export interface RevealCredentialRequest {
   masterPassword: string;
 }
 
+export interface CredentialHistoryResponse {
+  oldPassword: string;
+  changedAt: string;
+}
+
 export interface UpdateCredentialRequest {
   masterPassword: string;
   categoryId: number;

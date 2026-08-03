@@ -30,9 +30,14 @@ services:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      AES_SECRET_KEY: ${AES_SECRET_KEY}
+      AES_VAULT_TOKEN_KEYS: ${AES_VAULT_TOKEN_KEYS}
 
     env_file:
       - .env
+
+    command: ["--debug"]
 
     restart: always
 

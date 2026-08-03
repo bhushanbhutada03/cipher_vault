@@ -20,7 +20,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
   return (
     <Link
       to={`/credentials/${credential.id}`}
-      className="group block overflow-hidden rounded-xl border border-border bg-surface transition-all duration-200 hover:border-brass/50 hover:shadow-md"
+      className="ui-card-interactive group block overflow-hidden rounded-xl border border-border bg-surface"
     >
       <div className="flex items-start justify-between p-5">
         <div className="flex items-start gap-4 overflow-hidden">
@@ -62,7 +62,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
           type="button"
           variant="ghost"
           size="icon"
-          className="shrink-0 transition-colors"
+          className="ui-icon-button shrink-0"
           onClick={handleToggleFavorite}
           disabled={toggleFavorite.isPending}
           aria-label={credential.favorite ? "Remove from favorites" : "Add to favorites"}

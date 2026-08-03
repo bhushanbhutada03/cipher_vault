@@ -1,4 +1,4 @@
-##### &#x09;SECURE CREDENTIAL ORGANIZER
+##### &#x09;Cipher Vault
 
 
 
@@ -678,3 +678,4 @@ Can I ever need the original value again?
            ↓
 
      BCrypt / PBKDF2 Hashing
+

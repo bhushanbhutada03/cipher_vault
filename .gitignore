@@ -19,12 +19,34 @@ backend/.sts4-cache
 backend/output.txt
 backend/.env
 
+# Maven
+backend/.mvn/
+*.class
+
 # =========================
 # Frontend
 # =========================
 frontend/node_modules/
 frontend/dist/
 frontend/.env
+
+# Vite
+frontend/.vite/
+
+# =========================
+# Test & Temporary Files
+# =========================
+frontend/screenshots/
+frontend/screenshots_edge_cases/
+frontend/screenshots_modals/
+
+frontend/test_*.cjs
+backend/test_*.ps1
+backend/connection_test.ps1
+backend/pool_test.ps1
+backend/smoke_test.ps1
+
+backend/Gen.java
 
 # =========================
 # OS
@@ -36,3 +58,17 @@ Thumbs.db
 # Logs
 # =========================
 *.log
+
+# =========================
+# Environment
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Misc
+# =========================
+*.tmp
+*.bak
+*.swp

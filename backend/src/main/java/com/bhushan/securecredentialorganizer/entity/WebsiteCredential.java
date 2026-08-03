@@ -19,6 +19,13 @@ public class WebsiteCredential {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    @Column(name = "version")
+    private Long version = 0L;
+
+    @Column(name = "credential_uuid", nullable = false, unique = true, length = 36)
+    private String credentialUuid;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference("user-credential")
@@ -65,6 +72,9 @@ public class WebsiteCredential {
         LocalDateTime now = LocalDateTime.now();
         createdAt = now;
         updatedAt = now;
+        if (credentialUuid == null) {
+            credentialUuid = java.util.UUID.randomUUID().toString();
+        }
     }
 
     @PreUpdate

@@ -1,4 +1,4 @@
-# Secure Credential Organizer
+# Cipher Vault
 
 A secure password management REST API built with Spring Boot that enables users to securely store, organize, and manage website credentials. The application uses JWT Authentication, Spring Security, AES Encryption, and MySQL to provide a secure credential management solution.
 

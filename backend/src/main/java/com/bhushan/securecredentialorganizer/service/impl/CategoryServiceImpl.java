@@ -19,14 +19,18 @@ import com.bhushan.securecredentialorganizer.exception.OperationNotAllowedExcept
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final WebsiteCredentialRepository websiteCredentialRepository;
 
     @Override
+    @Transactional
     public CategoryResponse createCategory(CategoryRequest request) {
 
         User user = getCurrentUser();
@@ -57,6 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryResponse updateCategory(Long id, CategoryRequest request) {
 
         User user = getCurrentUser();
@@ -79,6 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(Long id) {
 
         User user = getCurrentUser();

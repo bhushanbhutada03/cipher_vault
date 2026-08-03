@@ -60,7 +60,7 @@ export default function Favorites() {
                   Favorites
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                  Quick access to your most important and frequently used accounts.
+                  Quick access to your most-used accounts.
                 </p>
               </div>
             </div>
@@ -79,7 +79,7 @@ export default function Favorites() {
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search favorites..."
-                className="pl-9"
+                className="pl-9 h-12"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
               />
@@ -98,7 +98,7 @@ export default function Favorites() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="flex h-11 w-full rounded-md border border-border-strong bg-surface px-3.5 py-2 text-sm text-foreground transition-colors duration-150 focus-visible:border-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/30"
+                className="flex h-12 w-full rounded-md border border-border-strong bg-surface px-3.5 py-2 text-sm text-foreground transition-colors duration-150 focus-visible:border-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/30"
                 aria-label="Filter by category"
               >
                 <option value="All">All Categories</option>
@@ -137,13 +137,13 @@ export default function Favorites() {
                 </div>
                 <h3 className="font-display text-2xl font-semibold text-foreground">
                   {keyword || selectedCategory !== "All"
-                    ? "No favorites match your criteria"
-                    : "No favorites yet"}
+                    ? "No matches"
+                    : "No favorites"}
                 </h3>
                 <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground">
                   {keyword || selectedCategory !== "All"
-                    ? "Try adjusting your search or category filter to find what you're looking for."
-                    : "Star your most important credentials to easily find them here."}
+                    ? "Adjust your search or filter."
+                    : "Star credentials you use most."}
                 </p>
                 {(!keyword && selectedCategory === "All") && (
                   <Button type="button" className="mt-6 min-w-36" asChild>

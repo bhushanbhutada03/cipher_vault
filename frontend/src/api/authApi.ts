@@ -57,4 +57,20 @@ export const authApi = {
     );
     return data;
   },
+
+  async verifyRegistrationEmail(payload: VerifyOtpRequest): Promise<{ message: string }> {
+    const { data } = await axiosInstance.post<{ message: string }>(
+      "/api/auth/register/verify",
+      payload
+    );
+    return data;
+  },
+
+  async resendRegistrationOtp(payload: { email: string }): Promise<{ message: string }> {
+    const { data } = await axiosInstance.post<{ message: string }>(
+      "/api/auth/register/resend-otp",
+      payload
+    );
+    return data;
+  },
 };
